@@ -3,13 +3,14 @@
 Copyright (C) 2022 NULL_703, All rights reserved.
 Created on 2022.7.9  13:04
 Created by NULL_703
-Last change time on 2022.10.9  13:01
+Last change time on 2022.11.6  20:46
 ************************************************************************/
 #ifndef TEXTWRITER_MAIN_H
 #define TEXTWRITER_MAIN_H
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "Colors.h"
 #include "texts.h"
 #include "formulas.h"

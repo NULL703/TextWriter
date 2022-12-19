@@ -3,7 +3,7 @@
 Copyright (C) 2022 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2022.10.25  20:39
+Last change time on 2022.11.6  12:59
 ************************************************************************/
 #include <main.h>
 #include <stdlib.h>
@@ -11,16 +11,25 @@ Last change time on 2022.10.25  20:39
 
 char spchars[0x2][0xf] = {"", "EXT"};
 char tempbuf[0xff];
-char filename[0x100] = "default.txt";
+char filename[0xff] = "default.txt";
 int tempbufPointer = 0;
 FILE* outfile;
 
 // 应用用户输入的文件名
-void fileNameChange(const char* objName)
+void fileNameChange(const char* objName, SHK_BOOL nseMode)
 {
+    int loop = 0;
     int nameSize = shk_strlen(objName) - 1;
-    for(int i = 0; i != nameSize + 3; i++)
+    for(int i = 0; i != nameSize + 3; i++, loop++)
         filename[i] = objName[i];
+    if(nseMode == SHK_TRUE)
+    {
+        filename[loop] = '.';
+        filename[loop++] = 'n';
+        filename[loop++] = 's';
+        filename[loop++] = 'e';
+        filename[loop++] = '\0';
+    }
 }
 
 int spcharEx(int spcharIndex, FILE* fileptr)
@@ -45,12 +54,12 @@ int spcharMatch(const char* spc, FILE* fileptr)
     return spcharEx(spcharIndex, fileptr);
 }
 
-void getFileName()
+void getFileName(SHK_BOOL nseMode)
 {
     int tempbuf = 0;
-    char tempfn[0x100] = "";
+    char tempfn[0xff] = "";
     SHK_BOOL renameMark = SHK_FALSE;
-    for(int i = 0; i < 0xff; i++)
+    for(int i = 0; i < 0xf0; i++)
     {
         tempbuf = getchar();
         if(tempbuf == 10)
@@ -69,7 +78,7 @@ void getFileName()
         while(access(tempfn, 0) != -1 || renameMark == SHK_TRUE)
         {
             printf("%s%s%s", F_RED, W0007, NORMAL);
-            for(int i = 0; i < 0xff; i++)
+            for(int i = 0; i < 0xf0; i++)
             {
                 tempbuf = getchar();
                 if(tempbuf == 10)
@@ -82,7 +91,7 @@ void getFileName()
             if(access(tempfn, 0) == -1) break;
         }
     }
-    fileNameChange(tempfn);
+    fileNameChange(tempfn, nseMode);
 }
 
 SHK_BOOL openfile()
@@ -128,7 +137,7 @@ int asciiWriter()
 {
     char atch;
     printf("%s", W0005);
-    getFileName();
+    getFileName(SHK_TRUE);
     if(!openfile()) return 1;
     printf("%s", W0008);
     fprintf(outfile, "07, 03");    // 为后期版本保留的文件魔数
@@ -137,7 +146,7 @@ int asciiWriter()
         atch = getchar();
         if(atch == '^')
             if(isEscape() != 0) continue;
-        fprintf(outfile, ", %d", atch);
+        fprintf(outfile, ", %d", (int)atch);
     }
     fclose(outfile);
     return 0;
@@ -147,7 +156,7 @@ int textWriter()
 {
     char tch;
     printf("%s", W0005);
-    getFileName();
+    getFileName(SHK_FALSE);
     if(!openfile()) return 1;
     printf("%s", W0008);
     while(1)

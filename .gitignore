@@ -38,6 +38,7 @@
 .vscode
 test
 trash
+release
 
 # 来自其他项目的文件或目录
 lib

@@ -3,15 +3,15 @@
 # Copyright (C) 2022 NULL_703. All rights reserved.
 # Created on 2022.9.27  16:30
 # Created by NULL_703
-# Last change time on 2022.10.30  13:01
+# Last change time on 2022.12.18  17:17
 #*************************************************************************
 cpp := g++
 gc := gcc
-cflag := -O2 -std=c99 -Wall -s -I ./include
-flag := -O2 -std=c++11 -Wall -s -I ./include
+cflag := -O2 -std=c99 -Wall -DZH_CN -fexec-charset=GBK -s -I ./include
+flag := -O2 -std=c++11 -Wall -DZH_CN -fexec-charset=GBK -s -I ./include
 bin := cmdtr.exe
 lib := libformula.dll
-obj := main.o cmdargs.o filereader.o writer.o
+obj := main.o cmdargs.o filereader.o writer.o convert.o
 res := cmdtr.o
 
 all: $(bin) $(lib)
