@@ -3,17 +3,20 @@
 Copyright (C) 2022 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2022.12.19  12:19
+Last change time on 2022.12.19  16:54
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
     #define W0001 "TextWriter V1.0.1, Copyright (C) 2022 NULL_703, All rights reserved.\n"\
-        "用法：cmdtr [--ascii] [-a] [--text] [-t] [--read-as-ascii] [--read-as-text] [--help] [-h]\n"\
+        "用法：cmdtr [--ascii] [-a] [--text] [-t] [--read-as-ascii] [--read-as-text] [--help] [-h] "\
+        "[--export-as-nse] [--export-as-ori]\n"\
         "[--ascii] [-a]: 保存为ascii数字序列。\n"\
         "[--text] [-t]: 保存为文本文件。\n"\
         "[--read-as-ascii]: 读取ascii数字序列文件（只读）\n"\
         "[--read-as-text]: 读取文本文件。（只读）\n"\
-        "[--help] [-h]: 显示帮助信息。\n"
+        "[--help] [-h]: 显示帮助信息。\n"\
+        "[--export-as-nse]: 将文件转换为数字序列文件。\n"\
+        "[--export-as-ori]: 将数字序列文件转换为源数据。\n"
     #define W0002 "错误：参数过少！[E_1001]\n"
     #define W0003 "错误：必须要有一个参数或选项！[E_1002]\n"
     #define W0004 "错误：无效的参数或选项！[E_1003]\n"

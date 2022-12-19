@@ -3,7 +3,7 @@
 Copyright (C) 2022 NULL_703, All rights reserved.
 Created on 2022.7.9  13:42
 Created by NULL_703
-Last change time on 2022.12.19  12:09
+Last change time on 2022.12.19  16:54
 ************************************************************************/
 #ifndef TEXTWRITER_TEXTS_H
 #define TEXTWRITER_TEXTS_H
@@ -12,12 +12,15 @@ Last change time on 2022.12.19  12:09
     #include "texts_zh_CN.h"
 #else
     #define W0001 "TextWriter V1.0.1, Copyright (C) 2022 NULL_703, All rights reserved.\n"\
-        "Usage: cmdtr [--ascii] [-a] [--text] [-t] [--read-as-ascii] [--read-as-text] [--help] [-h]\n"\
+        "Usage: cmdtr [--ascii] [-a] [--text] [-t] [--read-as-ascii] [--read-as-text] [--help] [-h] "\
+        "[--export-as-nse] [--export-as-ori]\n"\
         "[--ascii] [-a]: Save as ascii number sequence.\n"\
         "[--text] [-t]: Save as text file.\n"\
         "[--read-as-ascii]: Read ascii number sequence file. (Read only)\n"\
         "[--read-as-text]: Read text file. (Read only)\n"\
-        "[--help] [-h]: Show help infomation.\n"
+        "[--help] [-h]: Show help infomation.\n"\
+        "[--export-as-nse]: Export as number sequencefile.\n"\
+        "[--export-as-ori]: Export as original data.\n"
     #define W0002 "Error: Parameter too few! [E_1001]\n"
     #define W0003 "Error: Must have a parameter or option! [E_1002]\n"
     #define W0004 "Error: Invalid parameter or option! [E_1003]\n"
