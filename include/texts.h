@@ -35,7 +35,7 @@ Last change time on 2022.12.19  16:54
     #define W0013 "File export processing: \n"
     #define W0014 "Warning: Option usage invalid. [W_1002]\n"
     #define W0015 "Error: Must specify a filename. [E_1004]\n"
-    #define W0016 "Warning: File too big, option is stopped. [W_2002]\n"
+    #define W0016 "Warning: File too big, operation is stopped. [W_2002]\n"
     #define W0017 "File exporting...\n"
 #endif    // ZH_CN
 #endif    // TEXTWRITER_TEXTS_H
