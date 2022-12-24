@@ -20,12 +20,12 @@ BEGIN
 		BEGIN 
 			VALUE "CompanyName",     "cmdtr Developer"
 			VALUE "FileDescription", "A basic command-line file process program."
-			VALUE "FileVersion",     "0.0.1.12"
+			VALUE "FileVersion",     "1.0.1.16"
 			VALUE "InternalName",    "cmdtr"
 			VALUE "LegalCopyright",  "Copyright (C) 2022 NULL_703. All rights reserved."
 			VALUE "OriginalFilename","cmdtr.exe"
 			VALUE "ProductName",     "cmdtr"
-			VALUE "ProductVersion",  "0.0.1.12"
+			VALUE "ProductVersion",  "1.0.1.16"
 		END
 	END
 	BLOCK "VarFileInfo" 
