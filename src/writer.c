@@ -1,12 +1,13 @@
 /************************************************************************
 文本写入模块。
-Copyright (C) 2022 NULL_703, All rights reserved.
+Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2022.11.6  12:59
+Last change time on 2023.1.18  22:02
 ************************************************************************/
-#include <main.h>
 #include <stdlib.h>
+#include <time.h>
+#include <main.h>
 #include <writer.h>
 
 char spchars[0x2][0xf] = {"", "EXT"};
@@ -136,6 +137,7 @@ int isEscape()
 int asciiWriter()
 {
     char atch;
+    int editTime = time(NULL);
     printf("%s", W0005);
     getFileName(SHK_TRUE);
     if(!openfile()) return 1;
@@ -147,6 +149,12 @@ int asciiWriter()
         if(atch == '^')
             if(isEscape() != 0) continue;
         fprintf(outfile, ", %d", (int)atch);
+        // 距离上一次刷新缓冲区或打开文件超过1分钟则刷新缓冲区
+        if(time(NULL) - editTime > 60)
+        {
+            fflush(outfile);
+            editTime = time(NULL);
+        }
     }
     fclose(outfile);
     return 0;
@@ -154,6 +162,7 @@ int asciiWriter()
 
 int textWriter()
 {
+    int editTime = time(NULL);
     char tch;
     printf("%s", W0005);
     getFileName(SHK_FALSE);
@@ -165,6 +174,12 @@ int textWriter()
         if(tch == '^')
             if(isEscape() != 0) continue;
         fwrite(&tch, sizeof(tch), 1, outfile);
+        // 距离上一次刷新缓冲区或打开文件超过1分钟则刷新缓冲区
+        if(time(NULL) - editTime > 60)
+        {
+            fflush(outfile);
+            editTime = time(NULL);
+        }
     }
     fclose(outfile);
     return 0;

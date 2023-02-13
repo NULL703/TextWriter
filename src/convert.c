@@ -1,18 +1,35 @@
 /************************************************************************
 文件转换模块。
-Copyright (C) 2022 NULL_703, All rights reserved.
+Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.1  19:40
 Created by NULL_703
-Last change time on 2022.12.18  17:21
+Last change time on 2023.2.13  16:58
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
-#include <time.h>
 
 FILE* exportfile;
 SHK_BOOL firstFlag = SHK_TRUE;
 int outputCharCount = 0;
 int filesize = 0;
+char varName[0x20];
+
+char* getVarname(const char* origname)
+{
+    for(int i = 0; origname[i] != '.' && i <= 0x20 && shk_strlen(origname) != i; i++)
+        varName[i] = origname[i];
+    return varName;
+}
+
+SHK_BOOL normalNSEMagicNumCheck(const char* magicNum)
+{
+    if(shk_scmp(magicNum, "07, 03,") == SHK_FALSE)
+    {
+        printf("%s%s%s", F_RED, W0011, NORMAL);
+        return SHK_FALSE;
+    }
+    return SHK_TRUE;
+}
 
 SHK_BOOL openfile_cv(const char* fileName, const char* readMode)
 {
@@ -61,7 +78,6 @@ SHK_BOOL procressBarDrawer(int totalByte, int exportByte)
 int fileSizeof(const char* filename)
 {
     FILE* tf;
-    int filesize = 0;
     if((tf = fopen(filename, "r")) == NULL) return -1;
     fseek(tf, 0, SEEK_END);
     filesize = ftell(tf);
@@ -69,20 +85,20 @@ int fileSizeof(const char* filename)
     return filesize;
 }
 
-int asciiExport(FILE* file, const char* filename, const char* outputFilename)
+int asciiExport(FILE* file, const char* filename, const char* outputFilename, SHK_BOOL bigfile)
 {
     char tempbuf = 32;    // Default character is space.
     int loop = 0;
     SHK_BOOL first = SHK_TRUE;
     filesize = fileSizeof(filename);
-    if(filesize > 0x1000000)
+    if(filesize > 0x1000000 && bigfile == SHK_FALSE)
     {
         printf("%s%s%s", F_YELLOW, W0016, NORMAL);
         return 16;
     }
     file = openInputFile(filename);
     if(!openfile_cv(outputFilename, "a")) return 1;
-    printf("%s%s", F_LIGHT_BLUE, W0013);
+    if(filesize > 0x280000) printf("%s%s", F_LIGHT_BLUE, W0013);
     fprintf(exportfile, "07, 03");
     while(1)
     {
@@ -92,12 +108,14 @@ int asciiExport(FILE* file, const char* filename, const char* outputFilename)
             first = SHK_FALSE;
             continue;
         }
-        if(((loop * 100) / filesize) % 4 == 0) procressBarDrawer(filesize, loop);
+        if(((loop * 100) / filesize) % 4 == 0 && filesize > 0x280000)
+            procressBarDrawer(filesize, loop);
         tempbuf = fgetc(file);
         if(feof(file)) break;
         fprintf(exportfile, ", %d", (int)tempbuf);
     }
     printf("%s\n", NORMAL);    // 恢复为终端的默认字体
+    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);
     return 0;
@@ -114,9 +132,10 @@ int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename)
     if(!openfile_cv(outputFilename, "ab")) return 1;
     for(int i = 0; i < 7; i++)
         magicNum[i] = fgetc(file);
-    if(shk_scmp(magicNum, "07, 03,") == SHK_FALSE)
+    if(normalNSEMagicNumCheck(magicNum) == SHK_FALSE)
     {
-        printf("%s%s%s", F_RED, W0011, NORMAL);
+        fclose(file);    fclose(exportfile);
+        remove(outputFilename);
         return 3;
     }
     printf("%s", W0017);
@@ -137,6 +156,7 @@ int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename)
                 tempbuf[i] = '\0';
                 tempint = atoi(tempbuf);
                 fwrite(&tempint, sizeof(char), 1, exportfile);
+                printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
                 return 0;
             }
             tempbuf[i] = ch;
@@ -145,6 +165,82 @@ int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename)
         tempint = atoi(tempbuf);
         fwrite(&tempint, sizeof(char), 1, exportfile);
     }
+    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
+    fclose(file);
+    fclose(exportfile);
+    return 0;
+}
+
+int exportC_Style_Array(FILE* file, const char* filename, const char* outfile)
+{
+    char tempbuf = 32;
+    file = openInputFile(filename);
+    int dataitem = 0;
+    if(!openfile_cv(outfile, "a")) return 1;
+    // 此功能对输入文件的大小限制为8MB，且不能使用附加选项解除
+    if(fileSizeof(filename) > 0x800000)
+    {
+        printf("%s%s%s", F_YELLOW, W0021, NORMAL);
+        return 16;
+    }
+    // 导出的C样式文件头
+    fprintf(exportfile, C_STYLE_HEAD, getVarname(outfile), fileSizeof(filename));
+    // 文件正文
+    while(1)
+    {
+        tempbuf = fgetc(file);
+        if(feof(file)) break;
+        if(dataitem >= 0x10)
+        {
+            fprintf(exportfile, "\n");
+            dataitem = 0;
+        }
+        fprintf(exportfile, "%-4d,", (int)tempbuf);
+        dataitem++;
+    }
+    // 导出的C样式文件结尾
+    fprintf(exportfile, C_STYLE_TAIL);
+    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
+    fclose(file);
+    fclose(exportfile);
+    return 0;
+}
+
+int nse2C_Style_Array(FILE* file, const char* filename, const char* outfile)
+{
+    int dataitem = 0;
+    char tempchar = 0;
+    char magicNum[0x10];
+    file = openInputFile(filename);
+    if(!openfile_cv(outfile, "a")) return 1;
+    // 魔数检查
+    for(int i = 0; i < 7; i++)
+        magicNum[i] = fgetc(file);
+    if(normalNSEMagicNumCheck(magicNum) == SHK_FALSE)
+    {
+        fclose(file);    fclose(exportfile);
+        remove(outfile);
+        return 3;
+    }
+    fprintf(exportfile, C_STYLE_HEAD, getVarname(outfile), (int)fileSizeof(filename) / 2);
+    fgetc(file);    // 去除正文序列前剩余的一个空格
+    // 将源nse文件的序列写入数组，但每隔16个数据项会写入一个换行符
+    while(1)
+    {
+        tempchar = fgetc(file);
+        if(tempchar == ',') dataitem++;
+        if(feof(file)) break;
+        if(dataitem >= 0x10)
+        {
+            fprintf(exportfile, "%c\n", tempchar);
+            fgetc(file);    // 去除将会出现在行首的空格
+            dataitem = 0;
+            continue;
+        }
+        fprintf(exportfile, "%c", tempchar);
+    }
+    fprintf(exportfile, C_STYLE_TAIL);
+    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);
     return 0;

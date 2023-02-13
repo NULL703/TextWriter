@@ -1,9 +1,9 @@
 /************************************************************************
 程序选项解析模块。
-Copyright (C) 2022 NULL_703, All rights reserved.
+Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2022.12.15  8:20
+Last change time on 2023.2.13  12:16
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -11,11 +11,17 @@ Last change time on 2022.12.15  8:20
 #include <convert.h>
 
 SHK_BOOL haveLimitedarg = SHK_FALSE;
-int sigOpt[0xa] = {1, 2, 3, 4, 5, 6, 9, 10};    // 只能单独使用的关键选项ID
+int sigOpt[0x15] = {1, 2, 3, 4, 5, 6, 9, 10, 13, 14};    // 只能单独使用的关键选项ID
 const char propts[0x15][0x20] = {
-    "", "--ascii", "-a","--text", "-t", "--read-as-ascii", "--read-as-text", "--help", "-h",
-    "--export-as-nse", "--export-as-ori"
+    /* ID range: 0 ~ 8 */
+    "", "--ascii", "-a", "--text", "-t", "--read-as-ascii", "--read-as-text", "--help", "-h",
+    /* ID range: 9 ~ 14 */
+    "--export-as-nse", "--export-as-ori", "--bufsize", "--unlimited", "--file2C", "--nse2C"
 };
+
+// 修饰选项对应的默认状态值
+SHK_BOOL allowBigfile = SHK_FALSE;
+int textblockSize = 1000;
 
 typedef struct parange{
     int startID;
@@ -34,18 +40,44 @@ int argsMatch(const char* args)
     return -1;
 }
 
-char* changeFilename(const char* origFileName)
+/*
+    NOTE: 当前暂时无法得知某些情况下拓展名无法与主文件名合并的问题来源，对此问题的定位还在进行中。
+*/
+char* changeFilename(const char* origFileName, const char* mode)
 {
     static char res[0xff] = "";
-    for(int i = 0; i < shk_strlen(origFileName); i++)
+    if(shk_strlen(origFileName) + shk_strlen(mode) >= 0xff)
     {
-        res[i] = origFileName[i];
-        if(origFileName[i] == '.')
+        printf("%s%s%s", F_RED, W0020, NORMAL);
+        exit(1);
+    }
+    for(int i = 0, j = 0; i < shk_strlen(origFileName); i++, j++)
+    {
+        if((shk_incscmp("..", origFileName) == SHK_TRUE || origFileName[0] == '.') && i == 0)
+            i += 2;
+        if(origFileName[i] == '\\' || origFileName[i] == '/')
         {
-            res[i] = origFileName[i];
-            res[i + 1] = 110;    // n
-            res[i + 2] = 115;    // s
-            res[i + 3] = 101;    // e
+            j = -1;
+            res[1] = '\0';
+            continue;
+        }
+        res[j] = origFileName[i];
+        if((origFileName[i] == '.' || i == shk_strlen(origFileName)) && shk_scmp(mode, "NSE"))
+        {
+            res[j] = origFileName[i];
+            if(origFileName[i] != '.') res[j++] = '.';
+            j++;
+            res[j++] = 110;    // n
+            res[j++] = 115;    // s
+            res[j++] = 101;    // e
+            break;
+        }
+        if((origFileName[i] == '.' || i == shk_strlen(origFileName)) && shk_scmp(mode, "C"))
+        {
+            res[j] = origFileName[i];
+            if(origFileName[i] != '.') res[j++] = '.';
+            j++;
+            res[j++] = 99;    // c
             break;
         }
     }
@@ -55,7 +87,7 @@ char* changeFilename(const char* origFileName)
 SHK_BOOL isLimitedArg(int argID)
 {
     int index = 0;
-    while(index < 7)
+    while(index < 0xa)
     {
         if(sigOpt[index] == argID) return SHK_TRUE;
         index++;
@@ -70,6 +102,16 @@ SHK_BOOL argsCheck(int argID)
     return SHK_TRUE;
 }
 
+SHK_BOOL fileSpecifyCheck(const char* nextArg)
+{
+    if(shk_incscmp("-", nextArg) == SHK_TRUE)
+    {
+        printf("%s%s%s", F_RED, W0015, NORMAL);
+        return SHK_FALSE;
+    }
+    return SHK_TRUE;
+}
+
 // 主选项操作
 int lastexec(int laID, const char** argv)
 {
@@ -79,29 +121,25 @@ int lastexec(int laID, const char** argv)
         case 1: return asciiWriter(); break;
         case 2: return textWriter(); break;
         case 3: {
-            if(shk_incscmp("-", argv[pars.startID]) == SHK_TRUE)
-            {
-                printf("%s%s%s", F_RED, W0015, NORMAL);
-                return 2;
-            }
-            return asciiRead(argv[pars.startID]); break;
+            if(!fileSpecifyCheck(argv[pars.startID])) return 2;
+            return asciiRead(argv[pars.startID], textblockSize); break;
         }
         case 4: {
-            if(shk_incscmp("-", argv[pars.startID]) == SHK_TRUE)
-            {
-                printf("%s%s%s", F_RED, W0015, NORMAL);
-                return 2;
-            }
-            return textRead(argv[pars.startID]); break;
+            if(!fileSpecifyCheck(argv[pars.startID])) return 2;
+            return textRead(argv[pars.startID], textblockSize); break;
         }
-        case 5: return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID]));
+        case 5: return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "NSE"), allowBigfile);
         case 6: {
-            if(shk_incscmp("-", argv[pars.startID + 1]) == SHK_TRUE)
-            {
-                printf("%s%s%s", F_RED, W0015, NORMAL);
-                return 2;
-            }
+            if(!fileSpecifyCheck(argv[pars.startID + 1])) return 2;
             return restoreNSEfile(inputfile, argv[pars.startID], argv[pars.startID + 1]);
+        }
+        case 7: {
+            if(!fileSpecifyCheck(argv[pars.startID])) return 2;
+            return exportC_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"));
+        }
+        case 8: {
+            if(!fileSpecifyCheck(argv[pars.startID])) return 2;
+            return nse2C_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"));
         }
         default: return 2;
     }
@@ -126,6 +164,7 @@ int argsProcess(int argc, const char** argv)
         // 为后期版本的文件批处理保留的选项参数判断
         if(shk_incscmp("-", argv[argIndex]) == SHK_FALSE)
         {
+            IDrange = SHK_TRUE;
             argIndex++;
             continue;
         }
@@ -148,10 +187,22 @@ int argsProcess(int argc, const char** argv)
             case 8: {
                 if(argIndex > 1) return 2;
                 printf("%s", W0001);
-                break;
+                return 0;
             }
             case 9: tempID = 5; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
             case 10: tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
+            case 11: {
+                if(argc == argIndex)
+                {
+                    printf("%s%s%s", F_RED, W0018, NORMAL);
+                    return 2;
+                }
+                textblockSize = atoi(argv[argIndex + 1]);
+                break;
+            }
+            case 12: allowBigfile = SHK_TRUE; break;
+            case 13: tempID = 7; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
+            case 14: tempID = 8; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
             default: {
                 printf("%s%s%s", F_RED, W0004, NORMAL);
                 return 2;
@@ -160,7 +211,7 @@ int argsProcess(int argc, const char** argv)
         if(IDrange == SHK_TRUE)
         {
             IDrange = SHK_FALSE;
-            pars.endID = argIndex - 1;
+            pars.endID = argIndex;
         }
         argIndex++;
     }

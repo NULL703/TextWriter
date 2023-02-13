@@ -1,14 +1,23 @@
 /************************************************************************
 文件转换模块的接口（标头文件）。
-Copyright (C) 2022 NULL_703, All rights reserved.
+Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.1  19:43
 Created by NULL_703
-Last change time on 2022.11.5  22:39
+Last change time on 2023.2.11  17:16
 ************************************************************************/
 #ifndef TEXTWRITER_CONVERT_H
 #define TEXTWRITER_CONVERT_H
 
-int asciiExport(FILE* file, const char* filename, const char* outputFilename);
+#define C_STYLE_HEAD \
+    "/* Created by cmdtr. */\n" \
+    "int %s[%d] = {\n"
+#define C_STYLE_TAIL \
+    "\n};\n" \
+    "/* End of file. */"
+
+int asciiExport(FILE* file, const char* filename, const char* outputFilename, SHK_BOOL bigfile);
 int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename);
+int exportC_Style_Array(FILE* file, const char* filename, const char* outfile);
+int nse2C_Style_Array(FILE* file, const char* filename, const char* outfile);
 
 #endif    // TEXTWRITER_CONVERT_H
