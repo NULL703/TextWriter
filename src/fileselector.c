@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.4.5  12:32
+Last change time on 2023.4.5  15:31
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -172,11 +172,9 @@ int batchSelectFilenames(const char* dirname, int option, SHK_BOOL allowBigfile,
         printf("%s%s%s", F_RED, W0022, NORMAL);
         return 1;
     }
-    while(1)
+    while((dent = readdir(dirs)) != NULL)
     {
-        dent = readdir(dirs);
-        if(dent == NULL) break;
-        if(dent->d_type == 0)
+        if(dent->d_type == 0 || dent->d_type == 8)
         {
             if(shk_chcount(dent->d_name, '.') > 0) extnameStatus = SHK_TRUE;
             if(!addfile(dent->d_name, fileID, extnameStatus))
