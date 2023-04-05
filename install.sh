@@ -33,7 +33,7 @@ if [ "./bin" == "" -o ! -d "./bin" ]; then
     make
 fi
 
-# 编译失败必定不会参数可执行文件cmdtr，因此此处以可执行文件cmdtr是否存在作为编译成功的依据
+# 编译失败必定不会产生可执行文件cmdtr，因此此处以可执行文件cmdtr是否存在作为编译成功的依据
 test -e "./bin/cmdtr" || compileFailed
 cp -u "./bin/cmdtr" "/bin"
 # 如果两个存放库文件的目录都没有libformula则执行安装函数
