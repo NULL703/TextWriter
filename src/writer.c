@@ -3,17 +3,19 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.1.18  22:02
+Last change time on 2023.4.4  17:24
 ************************************************************************/
 #include <stdlib.h>
 #include <time.h>
 #include <main.h>
 #include <writer.h>
+#include <filereader.h>
 
 char spchars[0x2][0xf] = {"", "EXT"};
 char tempbuf[0xff];
 char filename[0xff] = "default.txt";
 int tempbufPointer = 0;
+SHK_BOOL newfile_mode = SHK_TRUE;
 FILE* outfile;
 
 // 应用用户输入的文件名
@@ -95,9 +97,9 @@ void getFileName(SHK_BOOL nseMode)
     fileNameChange(tempfn, nseMode);
 }
 
-SHK_BOOL openfile()
+SHK_BOOL open_Infile(const char* fname)
 {
-    if((outfile = fopen(filename, "a")) == NULL)
+    if((outfile = fopen(fname, "a")) == NULL)
     {
         printf("%s%s%s", F_RED, W0006, NORMAL);
         return SHK_FALSE;
@@ -130,19 +132,60 @@ int isEscape()
             while('\n' != getchar());
         }
         statusCode = spcharMatch(spchar, outfile);
+    }else{
+        fwrite(&prespc, sizeof(prespc), 1, outfile);
     }
     return statusCode;
+}
+
+int continueWrite(int writeMode, const char* fname)
+{
+    int errCode = 0;
+    SHK_BOOL exist_status = SHK_FALSE;
+    newfile_mode = SHK_FALSE;
+    if(access(fname, 0) == -1)
+    {
+        printf("%s%s%s", F_LIGHT_BLUE, W0025, NORMAL);
+        exist_status = SHK_TRUE;
+    }
+    if(shk_strlen(fname) > 0xfa) {printf("%s%s%s", F_RED, W0020, NORMAL); return 4;}
+    switch(writeMode)
+    {
+        case WTEXT: {
+            if(exist_status) return textWriter();
+            errCode = textRead(fname, 0);
+            fileNameChange(fname, SHK_FALSE);
+            if(errCode != 0) return errCode;
+            printf("\n");
+            return textWriter();
+        }
+        case WASCII: {
+            if(exist_status) return asciiWriter();
+            errCode = asciiRead(fname, 0);
+            fileNameChange(fname, SHK_TRUE);
+            if(errCode != 0) return errCode;
+            printf("\n");
+            return asciiWriter();
+        }
+        default: printf("%s%s%s", F_RED, W0024, NORMAL); return -1;
+    }
+    return 0;
 }
 
 int asciiWriter()
 {
     char atch;
     int editTime = time(NULL);
-    printf("%s", W0005);
-    getFileName(SHK_TRUE);
-    if(!openfile()) return 1;
+    if(newfile_mode)
+    {
+        printf("%s", W0005);
+        getFileName(SHK_TRUE);
+    }
+    if(!open_Infile(filename)) return 1;
     printf("%s", W0008);
-    fprintf(outfile, "07, 03");    // 为后期版本保留的文件魔数
+    if(!newfile_mode) fprintf(outfile, " ,");
+    else
+        fprintf(outfile, "07, 03");    // 为后期版本保留的文件魔数
     while(1)
     {
         atch = getchar();
@@ -164,9 +207,12 @@ int textWriter()
 {
     int editTime = time(NULL);
     char tch;
-    printf("%s", W0005);
-    getFileName(SHK_FALSE);
-    if(!openfile()) return 1;
+    if(newfile_mode)
+    {
+        printf("%s", W0005);
+        getFileName(SHK_FALSE);
+    }
+    if(!open_Infile(filename)) return 1;
     printf("%s", W0008);
     while(1)
     {

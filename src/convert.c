@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.1  19:40
 Created by NULL_703
-Last change time on 2023.2.13  16:58
+Last change time on 2023.4.4  13:57
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -24,7 +24,7 @@ char* getVarname(const char* origname)
 SHK_BOOL normalNSEMagicNumCheck(const char* magicNum)
 {
     if(shk_scmp(magicNum, "07, 03,") == SHK_FALSE)
-    {
+    {printf("%c", magicNum[6]);
         printf("%s%s%s", F_RED, W0011, NORMAL);
         return SHK_FALSE;
     }
@@ -85,12 +85,18 @@ int fileSizeof(const char* filename)
     return filesize;
 }
 
-int asciiExport(FILE* file, const char* filename, const char* outputFilename, SHK_BOOL bigfile)
+int asciiExport(FILE* file, const char* filename, const char* outputFilename, 
+                SHK_BOOL bigfile, SHK_BOOL batchMode)
 {
     char tempbuf = 32;    // Default character is space.
     int loop = 0;
     SHK_BOOL first = SHK_TRUE;
     filesize = fileSizeof(filename);
+    if(access(outputFilename, 0) != -1)
+    {
+        printf("%s%s%s%s", F_YELLOW, W0028, NORMAL, outputFilename);
+        return 0;
+    }
     if(filesize > 0x1000000 && bigfile == SHK_FALSE)
     {
         printf("%s%s%s", F_YELLOW, W0016, NORMAL);
@@ -115,30 +121,36 @@ int asciiExport(FILE* file, const char* filename, const char* outputFilename, SH
         fprintf(exportfile, ", %d", (int)tempbuf);
     }
     printf("%s\n", NORMAL);    // 恢复为终端的默认字体
-    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
+    if(!batchMode) printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);
     return 0;
 }
 
-int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename)
+int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename, SHK_BOOL batchMode)
 {
-    char magicNum[0x10];
+    char magicNum[8];
     char tempbuf[0xa];
     char ch = 0;
     file = openInputFile(filename);
     int loop = 0;
     int tempint = 0;
+    if(access(outputFilename, 0) != -1)
+    {
+        printf("%s%s%s%s", F_YELLOW, W0028, NORMAL, outputFilename);
+        return 0;
+    }
     if(!openfile_cv(outputFilename, "ab")) return 1;
     for(int i = 0; i < 7; i++)
         magicNum[i] = fgetc(file);
+    magicNum[7] = '\0';
     if(normalNSEMagicNumCheck(magicNum) == SHK_FALSE)
     {
         fclose(file);    fclose(exportfile);
         remove(outputFilename);
         return 3;
     }
-    printf("%s", W0017);
+    if(!batchMode) printf("%s", W0017);
     while(1)
     {
         loop++;
@@ -165,17 +177,22 @@ int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename)
         tempint = atoi(tempbuf);
         fwrite(&tempint, sizeof(char), 1, exportfile);
     }
-    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
+    if(!batchMode) printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);
     return 0;
 }
 
-int exportC_Style_Array(FILE* file, const char* filename, const char* outfile)
+int exportC_Style_Array(FILE* file, const char* filename, const char* outfile, SHK_BOOL batchMode)
 {
     char tempbuf = 32;
     file = openInputFile(filename);
     int dataitem = 0;
+    if(access(outfile, 0) != -1)
+    {
+        printf("%s%s%s%s", F_YELLOW, W0028, NORMAL, outfile);
+        return 0;
+    }
     if(!openfile_cv(outfile, "a")) return 1;
     // 此功能对输入文件的大小限制为8MB，且不能使用附加选项解除
     if(fileSizeof(filename) > 0x800000)
@@ -200,22 +217,28 @@ int exportC_Style_Array(FILE* file, const char* filename, const char* outfile)
     }
     // 导出的C样式文件结尾
     fprintf(exportfile, C_STYLE_TAIL);
-    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
+    if(!batchMode) printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);
     return 0;
 }
 
-int nse2C_Style_Array(FILE* file, const char* filename, const char* outfile)
+int nse2C_Style_Array(FILE* file, const char* filename, const char* outfile, SHK_BOOL batchMode)
 {
     int dataitem = 0;
     char tempchar = 0;
-    char magicNum[0x10];
+    char magicNum[8];
     file = openInputFile(filename);
+    if(access(outfile, 0) != -1)
+    {
+        printf("%s%s%s%s", F_YELLOW, W0028, NORMAL, outfile);
+        return 0;
+    }
     if(!openfile_cv(outfile, "a")) return 1;
     // 魔数检查
     for(int i = 0; i < 7; i++)
         magicNum[i] = fgetc(file);
+    magicNum[7] = '\0';
     if(normalNSEMagicNumCheck(magicNum) == SHK_FALSE)
     {
         fclose(file);    fclose(exportfile);
@@ -240,7 +263,7 @@ int nse2C_Style_Array(FILE* file, const char* filename, const char* outfile)
         fprintf(exportfile, "%c", tempchar);
     }
     fprintf(exportfile, C_STYLE_TAIL);
-    printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
+    if(!batchMode) printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);
     return 0;

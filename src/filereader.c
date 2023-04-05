@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.9.3  16:30
 Created by NULL_703
-Last change time on 2023.2.12  16:49
+Last change time on 2023.4.4  16:36
 ************************************************************************/
 #include <stdlib.h>
 #include <filereader.h>
@@ -40,7 +40,7 @@ int textRead(const char* name, int bufsize)
         if(i != 0 && bufsize != 0 && i % bufsize == 0)
         {
             page++;
-            printf("Page #%d    %s", page, W0010);
+            printf("\n%sPage #%d    %s", F_LIGHT_BLUE, page, W0010);
             getchar();
             // 防止文件过大导致变量值溢出
             if(i >= 0xf4240) i = 1;
@@ -98,7 +98,7 @@ int asciiRead(const char* name, int bufsize)
         if(i != 0 && bufsize != 0 && i % bufsize == 0)
         {
             page++;
-            printf("Page #%d    %s", page, W0010);
+            printf("\n%sPage #%d    %s", F_LIGHT_BLUE, page, W0010);
             getchar();
             // 防止文件过大导致变量值溢出
             if(i >= 0xf4240) i = 1;

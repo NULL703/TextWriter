@@ -1,12 +1,17 @@
 /************************************************************************
 程序内部接口（标头文件）。
-Copyright (C) 2022 NULL_703, All rights reserved.
+Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:04
 Created by NULL_703
-Last change time on 2022.11.6  20:46
+Last change time on 2023.4.4  13:45
 ************************************************************************/
 #ifndef TEXTWRITER_MAIN_H
 #define TEXTWRITER_MAIN_H
+
+#include <unistd.h>
+#ifdef __WIN32
+    #define access _access
+#endif
 
 #include <stdio.h>
 #include <string.h>

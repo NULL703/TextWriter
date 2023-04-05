@@ -3,24 +3,28 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.2.13  12:16
+Last change time on 2023.4.4  13:18
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
 #include <filereader.h>
 #include <convert.h>
+#include <fileselector.h>
 
 SHK_BOOL haveLimitedarg = SHK_FALSE;
 int sigOpt[0x15] = {1, 2, 3, 4, 5, 6, 9, 10, 13, 14};    // 只能单独使用的关键选项ID
-const char propts[0x15][0x20] = {
+const char propts[0x20][0x20] = {
     /* ID range: 0 ~ 8 */
     "", "--ascii", "-a", "--text", "-t", "--read-as-ascii", "--read-as-text", "--help", "-h",
     /* ID range: 9 ~ 14 */
-    "--export-as-nse", "--export-as-ori", "--bufsize", "--unlimited", "--file2C", "--nse2C"
+    "--export-as-nse", "--export-as-ori", "--bufsize", "--unlimited", "--file2C", "--nse2C",
+    /* ID range 15 ~ 20 */
+    "-A", "--showall", "-c", "--continue", "-b", "--batch"
 };
 
 // 修饰选项对应的默认状态值
 SHK_BOOL allowBigfile = SHK_FALSE;
+SHK_BOOL contWrite = SHK_FALSE;
 int textblockSize = 1000;
 
 typedef struct parange{
@@ -49,7 +53,7 @@ char* changeFilename(const char* origFileName, const char* mode)
     if(shk_strlen(origFileName) + shk_strlen(mode) >= 0xff)
     {
         printf("%s%s%s", F_RED, W0020, NORMAL);
-        exit(1);
+        exit(4);
     }
     for(int i = 0, j = 0; i < shk_strlen(origFileName); i++, j++)
     {
@@ -87,7 +91,7 @@ char* changeFilename(const char* origFileName, const char* mode)
 SHK_BOOL isLimitedArg(int argID)
 {
     int index = 0;
-    while(index < 0xa)
+    while(index < 0x16)
     {
         if(sigOpt[index] == argID) return SHK_TRUE;
         index++;
@@ -112,14 +116,32 @@ SHK_BOOL fileSpecifyCheck(const char* nextArg)
     return SHK_TRUE;
 }
 
+int convertMainOptionID(int tmpID)
+{
+    switch(tmpID)
+    {
+        case 5: return OPT_TONSE;
+        case 6: return OPT_TODAT;
+        case 7: return OPT_TOC;
+        case 8: return OPT_NSETOC;
+        default: return -1;
+    }
+}
+
 // 主选项操作
 int lastexec(int laID, const char** argv)
 {
     FILE* inputfile = NULL;
     switch(laID)
     {
-        case 1: return asciiWriter(); break;
-        case 2: return textWriter(); break;
+        case 1: {
+            if(contWrite) return continueWrite(WASCII, argv[3]);
+            return asciiWriter();
+        }
+        case 2: {
+            if(contWrite) return continueWrite(WTEXT, argv[3]);
+            return textWriter();
+        }
         case 3: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
             return asciiRead(argv[pars.startID], textblockSize); break;
@@ -128,20 +150,21 @@ int lastexec(int laID, const char** argv)
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
             return textRead(argv[pars.startID], textblockSize); break;
         }
-        case 5: return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "NSE"), allowBigfile);
+        case 5:
+            return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "NSE"), allowBigfile, SHK_FALSE);
         case 6: {
             if(!fileSpecifyCheck(argv[pars.startID + 1])) return 2;
-            return restoreNSEfile(inputfile, argv[pars.startID], argv[pars.startID + 1]);
+            return restoreNSEfile(inputfile, argv[pars.startID], argv[pars.startID + 1], SHK_FALSE);
         }
         case 7: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
-            return exportC_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"));
+            return exportC_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"), SHK_FALSE);
         }
         case 8: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
-            return nse2C_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"));
+            return nse2C_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"), SHK_FALSE);
         }
-        default: return 2;
+        default: printf("%s%s%s", F_RED, W0004, NORMAL); return 2;
     }
     return 0;
 }
@@ -153,6 +176,7 @@ int argsProcess(int argc, const char** argv)
     int argID = 0;
     int tempID = 0;
     SHK_BOOL IDrange = SHK_FALSE;
+    SHK_BOOL dirOpt = SHK_FALSE;
     if(argc == 1)
     {
         printf("%s%s%s", F_RED, W0003, NORMAL);
@@ -161,16 +185,14 @@ int argsProcess(int argc, const char** argv)
     while(argIndex < argc)
     {
         argID = argsMatch(argv[argIndex]);
-        // 为后期版本的文件批处理保留的选项参数判断
+        if(argv[argIndex] == NULL)
+        {
+            printf("%s%s%s", F_RED, W0002, NORMAL);
+            return 255;
+        }
         if(shk_incscmp("-", argv[argIndex]) == SHK_FALSE)
         {
             IDrange = SHK_TRUE;
-            argIndex++;
-            continue;
-        }
-        if(argsCheck(argID) == SHK_FALSE)
-        {
-            printf("%s%s%s", F_YELLOW, W0014, NORMAL);
             argIndex++;
             continue;
         }
@@ -189,8 +211,18 @@ int argsProcess(int argc, const char** argv)
                 printf("%s", W0001);
                 return 0;
             }
-            case 9: tempID = 5; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
-            case 10: tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
+            case 9: {
+                tempID = 5; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(dirOpt == SHK_TRUE)
+                    return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
+                break;
+            }
+            case 10: {
+                tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(dirOpt == SHK_TRUE)
+                    return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
+                break;
+            }
             case 11: {
                 if(argc == argIndex)
                 {
@@ -201,8 +233,31 @@ int argsProcess(int argc, const char** argv)
                 break;
             }
             case 12: allowBigfile = SHK_TRUE; break;
-            case 13: tempID = 7; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
-            case 14: tempID = 8; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
+            case 13: {
+                tempID = 7; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(dirOpt == SHK_TRUE)
+                    return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
+                break;
+            }
+            case 14: {
+                tempID = 8; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(dirOpt == SHK_TRUE)
+                    return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
+                break;
+            }
+            case 15:
+            case 16: return textRead(argv[argIndex + 1], 0);
+            case 17:
+            case 18: {
+                if(argc != 4)
+                {
+                    printf("%s%s%s", F_RED, W0026, NORMAL);
+                    return 11;
+                }
+                contWrite = SHK_TRUE; break;
+            }
+            case 19:
+            case 20: dirOpt = SHK_TRUE; break;
             default: {
                 printf("%s%s%s", F_RED, W0004, NORMAL);
                 return 2;

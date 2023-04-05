@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:42
 Created by NULL_703
-Last change time on 2023.2.13  11:00
+Last change time on 2023.4.4  17:21
 ************************************************************************/
 #ifndef TEXTWRITER_TEXTS_H
 #define TEXTWRITER_TEXTS_H
@@ -11,9 +11,8 @@ Last change time on 2023.2.13  11:00
 #ifdef ZH_CN
     #include "texts_zh_CN.h"
 #else
-    #define W0001 "TextWriter V1.0.2, Copyright (C) 2022 NULL_703, All rights reserved.\n"\
-        "Usage: cmdtr [--ascii] [-a] [--text] [-t] [--read-as-ascii] [--read-as-text] [--help] [-h] "\
-        "[--export-as-nse] [--export-as-ori]\n"\
+    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022 NULL_703, All rights reserved.\n"\
+        "Usage: cmdtr [MainOption] [AttachOption] [AttachOption of parameter]\n"\
         "[--ascii] [-a]: Save as ascii number sequence.\n"\
         "[--text] [-t]: Save as text file.\n"\
         "[--read-as-ascii]: Read ascii number sequence file. (Read only)\n"\
@@ -24,7 +23,10 @@ Last change time on 2023.2.13  11:00
         "[--bufsize]: Set print to terminal of character amount, if parameter value is 0 them print all character to terminal from file.\n"\
         "[--unlimited]: Cancel inputfile of max size is 16MB of limited. (Only option [--export-as-nse] have this limited)\n"\
         "[--file2C]: Convert specifyed file as C source file.(Filesize limited cannot cancel)\n"\
-        "[--nse2C]: Covert specifyed NSE file as C source file.\n"
+        "[--nse2C]: Covert specifyed NSE file as C source file.\n"\
+        "[-A] [--showall]: Show all content from file.\n"\
+        "[-c] [--continue]: Continue-write specified file, must be used with [-a], [--ascii], [-t], [--text] and must be before these options.\n"\
+        "[-b] [--batch]: Batch convert files, must be used with [--export-as-nse], [--export-as-ori], [--file2C], [--nse2C] and must be before these options.\n"
     #define W0002 "Error: Parameter too few! [E_1001]\n"
     #define W0003 "Error: Must have a parameter or option! [E_1002]\n"
     #define W0004 "Error: Invalid parameter or option! [E_1003]\n"
@@ -33,7 +35,7 @@ Last change time on 2023.2.13  11:00
     #define W0007 "Warning: This filename of file already exists, please rename again. [W_2001]\n"
     #define W0008 "Please input your text:\n"
     #define W0009 "Warning: This option only open ascii number sequence file! [W_1001]\n"
-    #define W0010 "\n\033[1;34m Press any key show next page...\033[m\n"
+    #define W0010 "Press any key show next page...\033[m\n"
     #define W0011 "Error: Invalid file magic number. [E_2002]\n"
     #define W0012 "Warning: File of size get failed, export process not show. [W_2001]\n"
     #define W0013 "File export processing: \n"
@@ -45,5 +47,13 @@ Last change time on 2023.2.13  11:00
     #define W0019 "Info: Operation finish! [I_1001]\n"
     #define W0020 "Error: Filename of length too long! [E_2003]\n"
     #define W0021 "Warning: Input file of size must less then 8MB, operation is stopped. [W_2002]\n"
+    #define W0022 "Error: Cannot open specified directory. [E_2004]\n"
+    #define W0023 "Error: Create filelist failed, return value is 8. [E_2005]\n"
+    #define W0024 "Error: Internal error! [E_-1]\n"
+    #define W0025 "Info: Specified file not exists, newfile is created.[I_2001]\n"
+    #define W0026 "Error: ContinueWrite mode must specify a file and option. [E_1006]\n"
+    #define W0027 "Warning: Skipped a empty file. [W_2003]\n"
+    #define W0028 "Warning: OutputFile is exists, opertion is skipped. [W_2004]\n"
+    #define W0029 "Converting file..."
 #endif    // ZH_CN
 #endif    // TEXTWRITER_TEXTS_H
