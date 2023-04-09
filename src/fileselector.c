@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.4.5  15:31
+Last change time on 2023.4.9  13:14
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -107,11 +107,11 @@ int execFileConvert(int option, SHK_BOOL allowBigfile, int bufsize)
     {
         if(fileSizeof(head->fname) == 0)
         {
-            printf("%s%s%s (fname=%s, fid=%d)\n", F_YELLOW, W0027, NORMAL, head->fname, head->ID);
+            printf("%s%s%s (fname=%s, fid=%d, tol=%d)\n", F_YELLOW, W0027, NORMAL, head->fname, head->ID, prev->ID + 1);
             head = head->nextobj;
             continue;
         }
-        printf("%s (fname=%s, fid=%d)\n", W0029, head->fname, head->ID);
+        printf("%s (fname=%s, fid=%d, tol=%d)\n", W0029, head->fname, head->ID, prev->ID + 1);
         switch(option)
         {
             case OPT_TONSE: 

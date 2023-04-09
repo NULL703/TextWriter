@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.4.4  13:18
+Last change time on 2023.4.9  12:55
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -116,6 +116,19 @@ SHK_BOOL fileSpecifyCheck(const char* nextArg)
     return SHK_TRUE;
 }
 
+void argIsNull(const char** args, int argc, int range)
+{
+    while(argc <= range)
+    {
+        argc++;
+        if(args[argc] == NULL)
+        {
+            printf("%s%s%s", F_RED, W0002, NORMAL);
+            exit(255);
+        }
+    }
+}
+
 int convertMainOptionID(int tmpID)
 {
     switch(tmpID)
@@ -184,12 +197,12 @@ int argsProcess(int argc, const char** argv)
     }
     while(argIndex < argc)
     {
-        argID = argsMatch(argv[argIndex]);
         if(argv[argIndex] == NULL)
         {
             printf("%s%s%s", F_RED, W0002, NORMAL);
             return 255;
         }
+        argID = argsMatch(argv[argIndex]);
         if(shk_incscmp("-", argv[argIndex]) == SHK_FALSE)
         {
             IDrange = SHK_TRUE;
@@ -212,13 +225,13 @@ int argsProcess(int argc, const char** argv)
                 return 0;
             }
             case 9: {
-                tempID = 5; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                argIsNull(argv, argIndex, 2); tempID = 5; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
                 if(dirOpt == SHK_TRUE)
                     return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
                 break;
             }
             case 10: {
-                tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                argIsNull(argv, argIndex, 2); tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
                 if(dirOpt == SHK_TRUE)
                     return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
                 break;
@@ -234,13 +247,13 @@ int argsProcess(int argc, const char** argv)
             }
             case 12: allowBigfile = SHK_TRUE; break;
             case 13: {
-                tempID = 7; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                argIsNull(argv, argIndex, 2); tempID = 7; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
                 if(dirOpt == SHK_TRUE)
                     return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
                 break;
             }
             case 14: {
-                tempID = 8; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                argIsNull(argv, argIndex, 2); tempID = 8; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
                 if(dirOpt == SHK_TRUE)
                     return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
                 break;

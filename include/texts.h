@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:42
 Created by NULL_703
-Last change time on 2023.4.4  17:21
+Last change time on 2023.4.9  12:57
 ************************************************************************/
 #ifndef TEXTWRITER_TEXTS_H
 #define TEXTWRITER_TEXTS_H
@@ -35,7 +35,7 @@ Last change time on 2023.4.4  17:21
     #define W0007 "Warning: This filename of file already exists, please rename again. [W_2001]\n"
     #define W0008 "Please input your text:\n"
     #define W0009 "Warning: This option only open ascii number sequence file! [W_1001]\n"
-    #define W0010 "Press any key show next page...\033[m\n"
+    #define W0010 "Press <Enter> show next page...\033[m\n"
     #define W0011 "Error: Invalid file magic number. [E_2002]\n"
     #define W0012 "Warning: File of size get failed, export process not show. [W_2001]\n"
     #define W0013 "File export processing: \n"
