@@ -1,0 +1,6 @@
+project(CMDTR)
+cmake_minimum_required(VERSION 3.13)
+set(SRC_LIST main.c cmdargs.c convert.c filereader.c writer.c fileselector.c)
+add_compile_options(-O2 -s -std=c99 -Wall -DZH_CN -fexec-charset=GBK -I../../include -I../../lib/libformula/include)
+add_executable(cmdtr ${SRC_LIST})
+target_link_libraries(cmdtr formula)

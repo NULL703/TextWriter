@@ -33,22 +33,11 @@
 
 # Other files
 *.log
-*.txt
 
 # Other folders
 .vscode
+bin
 test
 trash
 release
 build
-
-# 来自其他项目的文件或目录
-lib
-defvar.h
-formulas.h
-functions.h
-network.h
-phyformula.h
-shcomplex.h
-shvector.h
-imageProcess.h

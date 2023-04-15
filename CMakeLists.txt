@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.13)
+project(TextWriter)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(lib/libformula)
