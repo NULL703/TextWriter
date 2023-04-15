@@ -3,7 +3,7 @@
 # Copyright (C) 2022-2023 NULL_703. All rights reserved.
 # Created on 2022.9.27  16:30
 # Created by NULL_703
-# Last change time on 2023.4.5  11:05
+# Last change time on 2023.4.14  22:40
 #*************************************************************************
 cpp := g++
 gc := gcc
@@ -16,12 +16,14 @@ res := cmdtr.o
 
 all: $(bin) $(lib)
 	move $(bin) "./bin"
+	move $(lib) "./bin"
 
 $(bin): $(lib) $(obj) $(res)
+	copy ".\lib\libformula\bin\libformula.dll" "./"
 	$(gc) $(obj) $(res) -L. -lformula $(cflag) -o $(bin)
-	del libformula.dll
 
 $(lib): 
+	mkdir "./bin"
 	make -C ./lib/libformula/ -f win32.make
 
 $(obj): 
@@ -35,6 +37,7 @@ clean:
 	@echo "Deleting binary files..."
 	make -C ./lib/libformula/ -f win32.make clean
 	del *.o
+	del *.dll
 	del "./bin"
 	rmdir "bin"
 	@echo "Finish!"

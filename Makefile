@@ -3,7 +3,7 @@
 # Copyright (C) 2022-2023 NULL_703. All rights reserved.
 # Created on 2022.7.9  12:44
 # Created by NULL_703
-# Last change time on 2023.4.5  11:06
+# Last change time on 2023.4.14  22:40
 #*************************************************************************
 cpp := g++
 gc := gcc
@@ -15,10 +15,11 @@ obj := main.o cmdargs.o filereader.o writer.o convert.o fileselector.o
 
 all: $(bin) $(lib)
 	mv $(bin) "./bin"
+	mv $(lib) "./bin"
 
 $(bin): $(lib) $(obj)
+	cp ./lib/libformula/bin/libformula.so ./bin
 	$(gc) $(obj) -L. -lformula -lm $(cflag) -o $(bin)
-	rm $(lib)
 
 $(lib): 
 	make -C ./lib/libformula/

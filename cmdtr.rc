@@ -2,8 +2,8 @@
 #include <windows.h>
 
 VS_VERSION_INFO     VERSIONINFO
-  FILEVERSION       1,1,2,1
-  PRODUCTVERSION    1,1,2,1
+  FILEVERSION       1,1,2,3
+  PRODUCTVERSION    1,1,2,3
 FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -20,12 +20,12 @@ BEGIN
 		BEGIN 
 			VALUE "CompanyName",     "cmdtr Developer"
 			VALUE "FileDescription", "A basic command-line file process program."
-			VALUE "FileVersion",     "1.1.2.1"
+			VALUE "FileVersion",     "1.1.2.3"
 			VALUE "InternalName",    "cmdtr"
 			VALUE "LegalCopyright",  "Copyright (C) 2022 NULL_703. All rights reserved."
 			VALUE "OriginalFilename","cmdtr.exe"
 			VALUE "ProductName",     "cmdtr"
-			VALUE "ProductVersion",  "1.1.2.1"
+			VALUE "ProductVersion",  "1.1.2.3"
 		END
 	END
 	BLOCK "VarFileInfo" 
