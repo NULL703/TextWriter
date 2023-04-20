@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.4.4  17:24
+Last change time on 2023.4.20  22:41
 ************************************************************************/
 #include <stdlib.h>
 #include <time.h>
@@ -16,6 +16,7 @@ char tempbuf[0xff];
 char filename[0xff] = "default.txt";
 int tempbufPointer = 0;
 SHK_BOOL newfile_mode = SHK_TRUE;
+SHK_BOOL haveFilename = SHK_FALSE;
 FILE* outfile;
 
 // 应用用户输入的文件名
@@ -138,6 +139,23 @@ int isEscape()
     return statusCode;
 }
 
+int filenameFromArgs(int writeMode, const char* fname)
+{
+    haveFilename = SHK_TRUE;
+    if(access(fname, 0) != -1)
+    {
+        printf("%s%s%s", F_YELLOW, W0028, NORMAL);
+        return 6;
+    }
+    switch(writeMode)
+    {
+        case WTEXT: fileNameChange(fname, SHK_FALSE); return textWriter();
+        case WASCII: fileNameChange(fname, SHK_TRUE); return asciiWriter();
+        default: printf("%s%s%s", F_RED, W0024, NORMAL); return -1;
+    }
+    return 0;
+}
+
 int continueWrite(int writeMode, const char* fname)
 {
     int errCode = 0;
@@ -176,7 +194,7 @@ int asciiWriter()
 {
     char atch;
     int editTime = time(NULL);
-    if(newfile_mode)
+    if(newfile_mode && !haveFilename)
     {
         printf("%s", W0005);
         getFileName(SHK_TRUE);
@@ -207,7 +225,7 @@ int textWriter()
 {
     int editTime = time(NULL);
     char tch;
-    if(newfile_mode)
+    if(newfile_mode && !haveFilename)
     {
         printf("%s", W0005);
         getFileName(SHK_FALSE);

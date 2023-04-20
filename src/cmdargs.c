@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.4.9  12:55
+Last change time on 2023.4.20  22:56
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -118,14 +118,16 @@ SHK_BOOL fileSpecifyCheck(const char* nextArg)
 
 void argIsNull(const char** args, int argc, int range)
 {
-    while(argc <= range)
+    int count = 0;
+    while(count < range)
     {
-        argc++;
+        count++;
         if(args[argc] == NULL)
         {
             printf("%s%s%s", F_RED, W0002, NORMAL);
             exit(255);
         }
+        argc++;
     }
 }
 
@@ -213,9 +215,15 @@ int argsProcess(int argc, const char** argv)
         {
             case 0: printf("%s%s%s", F_RED, W0003, NORMAL); return 1;
             case 1:
-            case 2: tempID = 1; break;
+            case 2: {
+                if(!contWrite && argc > argIndex + 1) return filenameFromArgs(WASCII, argv[argIndex + 1]);
+                tempID = 1; break;
+            }
             case 3:
-            case 4: tempID = 2; break;
+            case 4: {
+                if(!contWrite && argc > argIndex + 1) return filenameFromArgs(WTEXT, argv[argIndex + 1]);
+                tempID = 2; break;
+            }
             case 5: tempID = 3; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
             case 6: tempID = 4; IDrange = SHK_TRUE; pars.startID = argIndex + 1; break;
             case 7:
@@ -231,7 +239,7 @@ int argsProcess(int argc, const char** argv)
                 break;
             }
             case 10: {
-                argIsNull(argv, argIndex, 2); tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                argIsNull(argv, argIndex, 3); tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
                 if(dirOpt == SHK_TRUE)
                     return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
                 break;
