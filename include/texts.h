@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:42
 Created by NULL_703
-Last change time on 2023.4.9  12:57
+Last change time on 2023.4.27  20:20
 ************************************************************************/
 #ifndef TEXTWRITER_TEXTS_H
 #define TEXTWRITER_TEXTS_H
@@ -11,7 +11,7 @@ Last change time on 2023.4.9  12:57
 #ifdef ZH_CN
     #include "texts_zh_CN.h"
 #else
-    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022 NULL_703, All rights reserved.\n"\
+    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
         "Usage: cmdtr [MainOption] [AttachOption] [AttachOption of parameter]\n"\
         "[--ascii] [-a]: Save as ascii number sequence.\n"\
         "[--text] [-t]: Save as text file.\n"\
@@ -55,5 +55,6 @@ Last change time on 2023.4.9  12:57
     #define W0027 "Warning: Skipped a empty file. [W_2003]\n"
     #define W0028 "Warning: OutputFile is exists, opertion is skipped. [W_2004]\n"
     #define W0029 "Converting file..."
+    #define W0030 "Info: No file searched in this directory. [I_2002]\n"
 #endif    // ZH_CN
 #endif    // TEXTWRITER_TEXTS_H

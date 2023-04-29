@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.4.9  13:14
+Last change time on 2023.4.28  17:13
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -35,14 +35,21 @@ int addMainFilename(const char* origfilename, int count)
     return count;
 }
 
+void cleanName()
+{
+    for(int i = 0; i < 0xff; i++)
+        ofilename[i] = '\0';
+}
+
 const char* del_NSE_Extname(const char* fname)
 {
     int extnameSec = shk_chcount(fname, '.');
+    cleanName();
     for(int i = 0, j = 0; fname[i] != '\0'; i++)
     {
         ofilename[i] = fname[i];
         if(fname[i] == '.') j++;
-        if(extnameSec >= 1 && j == (extnameSec - 1)) break;
+        if(extnameSec >= 1 && j == (extnameSec)) break;
     }
     return ofilename;
 }
@@ -50,6 +57,7 @@ const char* del_NSE_Extname(const char* fname)
 const char* add_C_Extname(const char* origfilename)
 {
     int charcount = 0;
+    cleanName();
     charcount = addMainFilename(origfilename, charcount);
     ofilename[charcount++] = '.'; ofilename[charcount++] = 'c';
     return ofilename;
@@ -58,6 +66,7 @@ const char* add_C_Extname(const char* origfilename)
 const char* add_NSE_Extname(const char* origfilename)
 {
     int charcount = 0;
+    cleanName();
     charcount = addMainFilename(origfilename, charcount);
     ofilename[charcount++] = '.';
     ofilename[charcount++] = 'n'; ofilename[charcount++] = 's'; ofilename[charcount++] = 'e';
@@ -108,6 +117,7 @@ int execFileConvert(int option, SHK_BOOL allowBigfile, int bufsize)
         if(fileSizeof(head->fname) == 0)
         {
             printf("%s%s%s (fname=%s, fid=%d, tol=%d)\n", F_YELLOW, W0027, NORMAL, head->fname, head->ID, prev->ID + 1);
+            if(head->ID == prev->ID) break;
             head = head->nextobj;
             continue;
         }
@@ -116,7 +126,7 @@ int execFileConvert(int option, SHK_BOOL allowBigfile, int bufsize)
         {
             case OPT_TONSE: 
                 errcode = asciiExport(infile, head->fname, add_NSE_Extname(head->fname), allowBigfile, SHK_TRUE); break;
-            case OPT_TODAT: errcode = restoreNSEfile(infile, head->fname, add_NSE_Extname(head->fname), SHK_TRUE); break;
+            case OPT_TODAT: errcode = restoreNSEfile(infile, head->fname, del_NSE_Extname(head->fname), SHK_TRUE); break;
             case OPT_TOC: exportC_Style_Array(infile, head->fname, add_C_Extname(head->fname), SHK_TRUE); break;
             case OPT_NSETOC: nse2C_Style_Array(infile, head->fname, add_C_Extname(head->fname), SHK_TRUE); break;
             default: printf("%s%s%s", F_RED, W0024, NORMAL); return -1;
@@ -158,7 +168,13 @@ int batchSelectFilenames(const char* dirname, int option, SHK_BOOL allowBigfile,
             }
         }
     }
-    prev->nextobj = NULL;
+    if(fileID == 0)
+    {
+        printf("%s%s%s", F_LIGHT_BLUE, W0030, NORMAL);
+        return 24;
+    }else{
+        prev->nextobj = NULL;
+    }
     return execFileConvert(option, allowBigfile, bufsize);
 }
 #else
@@ -187,7 +203,13 @@ int batchSelectFilenames(const char* dirname, int option, SHK_BOOL allowBigfile,
         }
         extnameStatus = SHK_FALSE;
     }
-    prev->nextobj = NULL;
+    if(fileID == 0)
+    {
+        printf("%s%s%s", F_LIGHT_BLUE, W0030, NORMAL);
+        return 7;
+    }else{
+        prev->nextobj = NULL;
+    }
     return execFileConvert(option, allowBigfile, bufsize);
 }
 #endif    // __MSVC

@@ -3,11 +3,11 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2023.4.9  12:57
+Last change time on 2023.4.27  20:20
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
-    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022 NULL_703, All rights reserved.\n"\
+    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
         "用法：cmdtr [主选项] [附加选项] [附加选项参数]\n"\
         "[--ascii] [-a]: 保存为ascii数字序列。\n"\
         "[--text] [-t]: 保存为文本文件。\n"\
@@ -51,4 +51,5 @@ Last change time on 2023.4.9  12:57
     #define W0027 "警告：已跳过空文件。[W_2003]\n"
     #define W0028 "警告：输出文件已存在，将跳过操作。[W_2004]\n"
     #define W0029 "正在转换文件..."
+    #define W0030 "信息：在此目录下没有搜索到文件。[I_2002]\n"
 #endif    // ZH_CN_H

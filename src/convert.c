@@ -188,6 +188,7 @@ int exportC_Style_Array(FILE* file, const char* filename, const char* outfile, S
     char tempbuf = 32;
     file = openInputFile(filename);
     int dataitem = 0;
+    SHK_BOOL first = SHK_TRUE;
     if(access(outfile, 0) != -1)
     {
         printf("%s%s%s%s", F_YELLOW, W0028, NORMAL, outfile);
@@ -207,12 +208,14 @@ int exportC_Style_Array(FILE* file, const char* filename, const char* outfile, S
     {
         tempbuf = fgetc(file);
         if(feof(file)) break;
+        if(!first) fprintf(exportfile, ",");
+        if(first) first = SHK_FALSE;
         if(dataitem >= 0x10)
         {
             fprintf(exportfile, "\n");
             dataitem = 0;
         }
-        fprintf(exportfile, "%-4d,", (int)tempbuf);
+        fprintf(exportfile, "%-4d", (int)tempbuf);
         dataitem++;
     }
     // 导出的C样式文件结尾
