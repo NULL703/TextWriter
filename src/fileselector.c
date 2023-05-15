@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.4.28  17:13
+Last change time on 2023.5.13  15:16
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -19,6 +19,8 @@ Last change time on 2023.4.28  17:13
 
 FOBJ* head = NULL;     FOBJ* node = NULL;    FOBJ* prev = NULL;
 char ofilename[0xff] = "";
+char path[0x3fff] = "";
+int pathlen = 0;
 
 int addMainFilename(const char* origfilename, int count)
 {
@@ -39,6 +41,58 @@ void cleanName()
 {
     for(int i = 0; i < 0xff; i++)
         ofilename[i] = '\0';
+}
+
+void cleanpath(int path_end, int fname_size)
+{
+    int count = 0;
+    while(1)
+    {
+        path[path_end++] = '\0';
+        count++;
+        if(count == fname_size) break;
+    }
+}
+
+void pathInit(const char* basepath)
+{
+    int basepath_len = shk_strlen(basepath);
+    pathlen = basepath_len;
+    if(basepath_len >= 0x3fa0)
+    {
+        printf("%s%s%s", F_RED, W0020, NORMAL);
+        exit(4);
+    }
+    for(int i = 0; i < basepath_len; i++)
+        path[i] = basepath[i];
+#ifdef __MSVC
+    if(path[basepath_len - 1] != '\\')
+    {
+        path[basepath_len] = '\\';
+        pathlen += 1;
+    }
+#else
+    if(path[basepath_len - 1] != '/')
+    {
+        path[basepath_len] = '/';
+        pathlen += 1;
+    }
+#endif    // __MSVC
+}
+
+const char* addFilenameInPath(const char* filename)
+{
+    static int filenameLen = 0;
+    int index = pathlen;
+    // 清除路径中的文件名，以防止出现上一个文件名残留的情况。
+    if(filenameLen != 0) cleanpath(pathlen, filenameLen);
+    filenameLen = shk_strlen(filename);
+    for(int i = 0; i < filenameLen; i++)
+    {
+        path[index] = filename[i];
+        index++;
+    }
+    return path;
 }
 
 const char* del_NSE_Extname(const char* fname)
@@ -125,10 +179,13 @@ int execFileConvert(int option, SHK_BOOL allowBigfile, int bufsize)
         switch(option)
         {
             case OPT_TONSE: 
-                errcode = asciiExport(infile, head->fname, add_NSE_Extname(head->fname), allowBigfile, SHK_TRUE); break;
-            case OPT_TODAT: errcode = restoreNSEfile(infile, head->fname, del_NSE_Extname(head->fname), SHK_TRUE); break;
-            case OPT_TOC: exportC_Style_Array(infile, head->fname, add_C_Extname(head->fname), SHK_TRUE); break;
-            case OPT_NSETOC: nse2C_Style_Array(infile, head->fname, add_C_Extname(head->fname), SHK_TRUE); break;
+                errcode = asciiExport(infile, addFilenameInPath(head->fname), add_NSE_Extname(head->fname), allowBigfile, SHK_TRUE); break;
+            case OPT_TODAT:
+                errcode = restoreNSEfile(infile, addFilenameInPath(head->fname), del_NSE_Extname(head->fname), SHK_TRUE); break;
+            case OPT_TOC:
+                exportC_Style_Array(infile, addFilenameInPath(head->fname), add_C_Extname(head->fname), SHK_TRUE); break;
+            case OPT_NSETOC:
+                nse2C_Style_Array(infile, addFilenameInPath(head->fname), add_C_Extname(head->fname), SHK_TRUE); break;
             default: printf("%s%s%s", F_RED, W0024, NORMAL); return -1;
         }
         if(head->ID == prev->ID) break;
@@ -175,6 +232,7 @@ int batchSelectFilenames(const char* dirname, int option, SHK_BOOL allowBigfile,
     }else{
         prev->nextobj = NULL;
     }
+    pathInit(dirname);
     return execFileConvert(option, allowBigfile, bufsize);
 }
 #else
@@ -210,6 +268,7 @@ int batchSelectFilenames(const char* dirname, int option, SHK_BOOL allowBigfile,
     }else{
         prev->nextobj = NULL;
     }
+    pathInit(dirname);
     return execFileConvert(option, allowBigfile, bufsize);
 }
 #endif    // __MSVC
