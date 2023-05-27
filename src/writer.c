@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.4.20  22:41
+Last change time on 2023.5.27  16:45
 ************************************************************************/
 #include <stdlib.h>
 #include <time.h>
@@ -11,7 +11,7 @@ Last change time on 2023.4.20  22:41
 #include <writer.h>
 #include <filereader.h>
 
-char spchars[0x2][0xf] = {"", "EXT"};
+char spchars[0x5][0xf] = {"", "EXT", "NSV"};
 char tempbuf[0xff];
 char filename[0xff] = "default.txt";
 int tempbufPointer = 0;
@@ -41,8 +41,10 @@ int spcharEx(int spcharIndex, FILE* fileptr)
     switch(spcharIndex)
     {
         case 0:
-        // ESC: EXT role: Quit program.
+        // ESC: EXT Fn: Quit program.
         case 1: fclose(fileptr); exit(0);
+        // ESC: NSV Fn: Not save file and exit.
+        case 2: fclose(fileptr); remove(filename); exit(0);
         default: return -1;
     }
 }
@@ -50,7 +52,7 @@ int spcharEx(int spcharIndex, FILE* fileptr)
 int spcharMatch(const char* spc, FILE* fileptr)
 {
     int spcharIndex = 0;
-    while(spcharIndex != 2)
+    while(spcharIndex != 5)
     {
         if(strcmp(spchars[spcharIndex], spc) == 0) break;
         spcharIndex++;

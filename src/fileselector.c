@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.5.13  15:16
+Last change time on 2023.5.16  12:31
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -103,7 +103,11 @@ const char* del_NSE_Extname(const char* fname)
     {
         ofilename[i] = fname[i];
         if(fname[i] == '.') j++;
-        if(extnameSec >= 1 && j == (extnameSec)) break;
+        if(extnameSec >= 1 && j == extnameSec)
+        {
+            ofilename[i] = '\0';
+            break;
+        }
     }
     return ofilename;
 }

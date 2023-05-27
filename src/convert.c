@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.1  19:40
 Created by NULL_703
-Last change time on 2023.4.4  13:57
+Last change time on 2023.5.20  23:19
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -11,7 +11,7 @@ Last change time on 2023.4.4  13:57
 FILE* exportfile;
 SHK_BOOL firstFlag = SHK_TRUE;
 int outputCharCount = 0;
-int filesize = 0;
+unsigned int filesize = 0;
 char varName[0x20];
 
 char* getVarname(const char* origname)
@@ -75,7 +75,7 @@ SHK_BOOL procressBarDrawer(int totalByte, int exportByte)
     return SHK_TRUE;
 }
 
-int fileSizeof(const char* filename)
+unsigned int fileSizeof(const char* filename)
 {
     FILE* tf;
     if((tf = fopen(filename, "r")) == NULL) return -1;
@@ -120,7 +120,7 @@ int asciiExport(FILE* file, const char* filename, const char* outputFilename,
         if(feof(file)) break;
         fprintf(exportfile, ", %d", (int)tempbuf);
     }
-    printf("%s\n", NORMAL);    // 恢复为终端的默认字体
+    printf("%s", NORMAL);    // 恢复为终端的默认字体
     if(!batchMode) printf("%s%s%s", F_LIGHT_BLUE, W0019, NORMAL);
     fclose(file);
     fclose(exportfile);

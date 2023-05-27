@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.4.20  22:56
+Last change time on 2023.5.16  12:25
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -239,7 +239,10 @@ int argsProcess(int argc, const char** argv)
                 break;
             }
             case 10: {
-                argIsNull(argv, argIndex, 3); tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(!dirOpt) argIsNull(argv, argIndex, 3);
+                else
+                    argIsNull(argv, argIndex, 2);
+                tempID = 6; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
                 if(dirOpt == SHK_TRUE)
                     return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
                 break;
