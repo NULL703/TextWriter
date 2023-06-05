@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.5.16  12:25
+Last change time on 2023.5.30  15:03
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -108,6 +108,11 @@ SHK_BOOL argsCheck(int argID)
 
 SHK_BOOL fileSpecifyCheck(const char* nextArg)
 {
+    if(nextArg == NULL)
+    {
+        printf("%s%s%s", F_RED, W0002, NORMAL);
+        exit(255);
+    }
     if(shk_incscmp("-", nextArg) == SHK_TRUE)
     {
         printf("%s%s%s", F_RED, W0015, NORMAL);
@@ -129,6 +134,27 @@ void argIsNull(const char** args, int argc, int range)
         }
         argc++;
     }
+}
+
+int batchReadfile(const char** argv, int argc, int argcOffset, RMODE readMode)
+{
+    int errcode = 0;
+    if(argv[argcOffset] == NULL)
+    {
+        printf("%s%s%s", F_RED, W0002, NORMAL);
+        return 255;
+    }
+    while(argcOffset < argc)
+    {
+        switch(readMode)
+        {
+            case READTEXT: errcode = textRead(argv[argcOffset], textblockSize); break;
+            case READNSE: errcode = asciiRead(argv[argcOffset], textblockSize); break;
+        }
+        argcOffset++;
+        if(errcode != 0) break;
+    }
+    return errcode;
 }
 
 int convertMainOptionID(int tmpID)
@@ -159,11 +185,11 @@ int lastexec(int laID, const char** argv)
         }
         case 3: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
-            return asciiRead(argv[pars.startID], textblockSize); break;
+            return batchReadfile(argv, pars.endID, pars.startID, READNSE); break;
         }
         case 4: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
-            return textRead(argv[pars.startID], textblockSize); break;
+            return batchReadfile(argv, pars.endID, pars.startID, READTEXT); break;
         }
         case 5:
             return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "NSE"), allowBigfile, SHK_FALSE);
@@ -207,6 +233,7 @@ int argsProcess(int argc, const char** argv)
         argID = argsMatch(argv[argIndex]);
         if(shk_incscmp("-", argv[argIndex]) == SHK_FALSE)
         {
+            if(argIndex == argc - 1 && pars.endID == 1) pars.endID = argIndex + 1;
             IDrange = SHK_TRUE;
             argIndex++;
             continue;
@@ -270,7 +297,7 @@ int argsProcess(int argc, const char** argv)
                 break;
             }
             case 15:
-            case 16: return textRead(argv[argIndex + 1], 0);
+            case 16: textblockSize = 0; return batchReadfile(argv, argc, argIndex + 1, READTEXT);
             case 17:
             case 18: {
                 if(argc != 4)

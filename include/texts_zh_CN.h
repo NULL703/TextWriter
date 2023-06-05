@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2023.4.27  20:20
+Last change time on 2023.6.3  10:55
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
@@ -29,7 +29,7 @@ Last change time on 2023.4.27  20:20
     #define W0005 "请输入文件名：（键入 `<` 以跳过）\n"
     #define W0006 "错误：文件读取失败！[E_2001]\n"
     #define W0007 "警告：这个文件已存在，请再次重命名。[W_2001]\n"
-    #define W0008 "键入文本：\n"
+    #define W0008 "\033[1;37;46m键入文本：\033[m\n"
     #define W0009 "警告：这个选项只能用于打开ascii数字序列文件。[W_1001]\n"
     #define W0010 "按 <Enter> 键以显示下一页...\033[m\n"
     #define W0011 "错误：无效的文件魔数！[E_2002]\n"

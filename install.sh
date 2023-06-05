@@ -61,7 +61,7 @@ function envcheck()
     errcode=0
     for cmdname in gcc make
     do
-        $cmdname --help &>/dev/null && errcode=0 || errcode=1
+        command -v $cmdname &>/dev/null && errcode=0 || errcode=1
         if [ "$errcode" != 0 ]; then
             echo "$cmdname 并没有安装在你的系统中，请先安装该软件后再执行此脚本。"
             exit 1
@@ -81,6 +81,9 @@ case "$1" in
     ;;
     "compile-only")
         compile; exit 0
+    ;;
+    *)
+        echo "参数 $1 不存在！"; exit 1
     ;;
 esac
 

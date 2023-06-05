@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.5.16  12:31
+Last change time on 2023.6.3  11:26
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -63,8 +63,17 @@ void pathInit(const char* basepath)
         printf("%s%s%s", F_RED, W0020, NORMAL);
         exit(4);
     }
-    for(int i = 0; i < basepath_len; i++)
-        path[i] = basepath[i];
+    for(int i = 0, j = 0; i < basepath_len; i++)
+    {
+#ifdef __MSVC
+        if(path[i] == '*')
+        {
+            j -= 1; basepath_len -= 1;
+            continue;
+        }
+#endif    // __MSVC
+        path[j] = basepath[i]; j++;
+    }
 #ifdef __MSVC
     if(path[basepath_len - 1] != '\\')
     {

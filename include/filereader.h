@@ -3,10 +3,14 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.9.3  16:31
 Created by NULL_703
-Last change time on 2023.2.11  14:21
+Last change time on 2023.5.30  13:10
 ************************************************************************/
 #ifndef TEXTWRITER_FILEREADER_H
 #define TEXTWRITER_FILEREADER_H
+
+typedef int RMODE;
+#define READTEXT        0
+#define READNSE         1
 
 int textRead(const char* name, int bufsize);
 int asciiRead(const char* name, int bufsize);
