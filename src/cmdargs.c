@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.5.30  15:03
+Last change time on 2023.6.9  9:09
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -12,14 +12,15 @@ Last change time on 2023.5.30  15:03
 #include <fileselector.h>
 
 SHK_BOOL haveLimitedarg = SHK_FALSE;
+SHK_BOOL showline = SHK_FALSE;
 int sigOpt[0x15] = {1, 2, 3, 4, 5, 6, 9, 10, 13, 14};    // 只能单独使用的关键选项ID
 const char propts[0x20][0x20] = {
     /* ID range: 0 ~ 8 */
     "", "--ascii", "-a", "--text", "-t", "--read-as-ascii", "--read-as-text", "--help", "-h",
     /* ID range: 9 ~ 14 */
     "--export-as-nse", "--export-as-ori", "--bufsize", "--unlimited", "--file2C", "--nse2C",
-    /* ID range 15 ~ 20 */
-    "-A", "--showall", "-c", "--continue", "-b", "--batch"
+    /* ID range 15 ~ 22 */
+    "-A", "--showall", "-c", "--continue", "-b", "--batch", "--showline", "-l"
 };
 
 // 修饰选项对应的默认状态值
@@ -36,12 +37,23 @@ prange pars = {0, 0};
 int argsMatch(const char* args)
 {
     int arrayPointer = 0;
-    while(arrayPointer != 0x15)
+    while(arrayPointer != 0x1a)
     {
         if(strcmp(args, propts[arrayPointer]) == 0) return arrayPointer;
         arrayPointer++;
     }
     return -1;
+}
+
+SHK_BOOL argIsMain(int argID)
+{
+    int index = 0;
+    while(index < 0xf)
+    {
+        if(sigOpt[index] == argID) return SHK_TRUE;
+        index++;
+    }
+    return SHK_FALSE;
 }
 
 /*
@@ -144,12 +156,14 @@ int batchReadfile(const char** argv, int argc, int argcOffset, RMODE readMode)
         printf("%s%s%s", F_RED, W0002, NORMAL);
         return 255;
     }
-    while(argcOffset < argc)
+    while(argcOffset <= argc)
     {
+        // 遇到与选项同名的则跳出循环
+        if(argsMatch(argv[argcOffset]) != -1) break;
         switch(readMode)
         {
-            case READTEXT: errcode = textRead(argv[argcOffset], textblockSize); break;
-            case READNSE: errcode = asciiRead(argv[argcOffset], textblockSize); break;
+            case READTEXT: errcode = textRead(argv[argcOffset], textblockSize, showline); break;
+            case READNSE: errcode = asciiRead(argv[argcOffset], textblockSize, showline); break;
         }
         argcOffset++;
         if(errcode != 0) break;
@@ -218,6 +232,8 @@ int argsProcess(int argc, const char** argv)
     int tempID = 0;
     SHK_BOOL IDrange = SHK_FALSE;
     SHK_BOOL dirOpt = SHK_FALSE;
+    SHK_BOOL rangeLock = SHK_FALSE;
+    SHK_BOOL mainarg = SHK_FALSE;
     if(argc == 1)
     {
         printf("%s%s%s", F_RED, W0003, NORMAL);
@@ -231,6 +247,12 @@ int argsProcess(int argc, const char** argv)
             return 255;
         }
         argID = argsMatch(argv[argIndex]);
+        if(((shk_incscmp("-", argv[argIndex]) && mainarg) || argIndex == argc - 1) && !rangeLock)
+        {
+            pars.endID = argIndex;
+            rangeLock = SHK_TRUE;
+        }
+        if(argIsMain(argsMatch(argv[argIndex]))) mainarg = SHK_TRUE;
         if(shk_incscmp("-", argv[argIndex]) == SHK_FALSE)
         {
             if(argIndex == argc - 1 && pars.endID == 1) pars.endID = argIndex + 1;
@@ -297,7 +319,7 @@ int argsProcess(int argc, const char** argv)
                 break;
             }
             case 15:
-            case 16: textblockSize = 0; return batchReadfile(argv, argc, argIndex + 1, READTEXT);
+            case 16: textblockSize = 0; return batchReadfile(argv, argc - 1, argIndex + 1, READTEXT);
             case 17:
             case 18: {
                 if(argc != 4)
@@ -309,6 +331,15 @@ int argsProcess(int argc, const char** argv)
             }
             case 19:
             case 20: dirOpt = SHK_TRUE; break;
+            case 21:
+            case 22: {
+                if(tempID == 3 || tempID == 4)
+                {
+                    printf("%s%s%s", F_YELLOW, W0014, NORMAL);
+                    return 21;
+                }
+                showline = SHK_TRUE; break;
+            }
             default: {
                 printf("%s%s%s", F_RED, W0004, NORMAL);
                 return 2;

@@ -3,12 +3,14 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2023.6.3  10:55
+Last change time on 2023.6.8  16:29
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
-    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
+    #define W0001 "TextWriter V1.1.2, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
         "用法：cmdtr [主选项] [附加选项] [附加选项参数]\n"\
+        "或：cmdtr [-l | --showline] [读取选项] [文件...]\n"\
+        "    cmdtr [主选项] [文件...]\n"\
         "[--ascii] [-a]: 保存为ascii数字序列。\n"\
         "[--text] [-t]: 保存为文本文件。\n"\
         "[--read-as-ascii]: 读取ascii数字序列文件（只读）\n"\
@@ -22,7 +24,8 @@ Last change time on 2023.6.3  10:55
         "[--nse2C]: 将指定的数字序列文件转换为C语言源文件。\n"\
         "[-A] [--showall]: 一次性显示文件的全部内容。\n"\
         "[-c] [--continue]: 续写指定的文件，必须与[-a], [--ascii], [-t], [--text]配合使用，且必须在这些选项的前面。\n"\
-        "[-b] [--batch]: 批量转换文件，必须与[--export-as-nse], [--export-as-ori], [--file2C], [--nse2C]配合使用，且必须在这些选项的前面。\n"
+        "[-b] [--batch]: 批量转换文件，必须与[--export-as-nse], [--export-as-ori], [--file2C], [--nse2C]配合使用，且必须在这些选项的前面。\n"\
+        "[-l] [--showline]: 显示行号，但是bufsize的值必须为0，且应该在主选项之前。\n"
     #define W0002 "错误：参数过少！[E_1001]\n"
     #define W0003 "错误：必须要有一个参数或选项！[E_1002]\n"
     #define W0004 "错误：无效的参数或选项！[E_1003]\n"
@@ -35,7 +38,7 @@ Last change time on 2023.6.3  10:55
     #define W0011 "错误：无效的文件魔数！[E_2002]\n"
     #define W0012 "警告：文件大小获取失败，导出进度无法显示。[W_2001]\n"
     #define W0013 "文件导出进度： \n"
-    #define W0014 "警告：无效的选项用法。[W_1002]\n"
+    #define W0014 "警告：无效的选项用法，操作已终止。[W_1002]\n"
     #define W0015 "错误：必须指定一个文件名！[E_1004]\n"
     #define W0016 "警告：文件过大，操作已经终止。（所允许的最大大小：16MB）[W_2002]\n"
     #define W0017 "文件转换中...\n"
@@ -52,4 +55,5 @@ Last change time on 2023.6.3  10:55
     #define W0028 "警告：输出文件已存在，将跳过操作。[W_2004]\n"
     #define W0029 "正在转换文件..."
     #define W0030 "信息：在此目录下没有搜索到文件。[I_2002]\n"
+    #define W0031 "警告：缓冲大小不为0，行数将不显示。[W_1003]\n"
 #endif    // ZH_CN_H

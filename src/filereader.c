@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.9.3  16:30
 Created by NULL_703
-Last change time on 2023.4.4  16:36
+Last change time on 2023.6.8  12:45
 ************************************************************************/
 #include <stdlib.h>
 #include <filereader.h>
@@ -17,20 +17,32 @@ int magicNumberCheck(const char* mg)
     return 0;
 }
 
-int textRead(const char* name, int bufsize)
+int textRead(const char* name, int bufsize, SHK_BOOL lineMode)
 {
     int charbuf = 32;    // Default character is space.
     int page = 0;
+    unsigned int line = 1;
     FILE* textfile;
     if((textfile = fopen(name, "rb")) == NULL)
     {
         printf("%s%s%s", F_RED, W0006, NORMAL);
         return 1;
     }
+    if(bufsize != 0 && lineMode)
+    {
+        printf("%s%s%s", F_YELLOW, W0031, NORMAL);
+        lineMode = SHK_FALSE;
+    }
+    if(lineMode != 0) printf("\033[0;47;30m%d \033[m", line);
     for(int i = 0; !feof(textfile); i++)
     {
         // 如果是第一次循环则跳过，因为在第一次循环的时候临时字符变量还是初始值，需要先从文件获取数据后才能输出。
         if(i > 0) putchar(charbuf);
+        if(charbuf == '\n' && lineMode != 0)
+        {
+            line++;
+            printf("\033[0;47;30m%d \033[m", line);
+        }
         charbuf = fgetc(textfile);
         /*
             NOTE: 此处的代码存在有一个致命问题，经过较长时间的调试已解决，现将其命名为“幽灵之刃”。
@@ -51,7 +63,7 @@ int textRead(const char* name, int bufsize)
     return 0;
 }
 
-int asciiRead(const char* name, int bufsize)
+int asciiRead(const char* name, int bufsize, SHK_BOOL lineMode)
 {
     char seqbuf[0xa];
     char magicNum[0x10] = "......\0";
@@ -59,12 +71,19 @@ int asciiRead(const char* name, int bufsize)
     int magicCount = 0;
     int page = 0;
     int magicIndex = 0;
+    unsigned int line = 1;
     FILE* asciifile;
     if((asciifile = fopen(name, "r")) == NULL)
     {
         printf("%s%s%s", F_RED, W0006, NORMAL);
         return 1;
     }
+    if(bufsize != 0 && lineMode)
+    {
+        printf("%s%s%s", F_YELLOW, W0031, NORMAL);
+        lineMode = SHK_FALSE;
+    }
+    if(lineMode != 0) printf("\033[0;47;30m%d \033[m", line);
     for(int i = 0; ; i++)
     {
         for(int j = 0; j < 9; j++, magicIndex++)
@@ -95,6 +114,11 @@ int asciiRead(const char* name, int bufsize)
         }
         if(magicCount < 1 || i <= 1) continue;
         printf("%c", atoi(seqbuf));
+        if(atoi(seqbuf) == 10 && lineMode != 0)
+        {
+            line++;
+            printf("\033[0;47;30m%d \033[m", line);
+        }
         if(i != 0 && bufsize != 0 && i % bufsize == 0)
         {
             page++;

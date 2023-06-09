@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.5.27  16:45
+Last change time on 2023.6.8  10:05
 ************************************************************************/
 #include <stdlib.h>
 #include <time.h>
@@ -173,7 +173,7 @@ int continueWrite(int writeMode, const char* fname)
     {
         case WTEXT: {
             if(exist_status) return textWriter();
-            errCode = textRead(fname, 0);
+            errCode = textRead(fname, 0, SHK_FALSE);
             fileNameChange(fname, SHK_FALSE);
             if(errCode != 0) return errCode;
             printf("\n");
@@ -181,7 +181,7 @@ int continueWrite(int writeMode, const char* fname)
         }
         case WASCII: {
             if(exist_status) return asciiWriter();
-            errCode = asciiRead(fname, 0);
+            errCode = asciiRead(fname, 0, SHK_FALSE);
             fileNameChange(fname, SHK_TRUE);
             if(errCode != 0) return errCode;
             printf("\n");

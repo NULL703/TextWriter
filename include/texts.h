@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:42
 Created by NULL_703
-Last change time on 2023.6.3  10:56
+Last change time on 2023.6.8  18:49
 ************************************************************************/
 #ifndef TEXTWRITER_TEXTS_H
 #define TEXTWRITER_TEXTS_H
@@ -11,8 +11,10 @@ Last change time on 2023.6.3  10:56
 #ifdef ZH_CN
     #include "texts_zh_CN.h"
 #else
-    #define W0001 "TextWriter V1.1.1, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
+    #define W0001 "TextWriter V1.1.2, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
         "Usage: cmdtr [MainOption] [AttachOption] [AttachOption of parameter]\n"\
+        "Or: cmdtr [-l | --showline] [ReadOption] [files...]\n"\
+        "    cmdtr [MainOption] [files...]\n"\
         "[--ascii] [-a]: Save as ascii number sequence.\n"\
         "[--text] [-t]: Save as text file.\n"\
         "[--read-as-ascii]: Read ascii number sequence file. (Read only)\n"\
@@ -26,7 +28,8 @@ Last change time on 2023.6.3  10:56
         "[--nse2C]: Covert specifyed NSE file as C source file.\n"\
         "[-A] [--showall]: Show all content from file.\n"\
         "[-c] [--continue]: Continue-write specified file, must be used with [-a], [--ascii], [-t], [--text] and must be before these options.\n"\
-        "[-b] [--batch]: Batch convert files, must be used with [--export-as-nse], [--export-as-ori], [--file2C], [--nse2C] and must be before these options.\n"
+        "[-b] [--batch]: Batch convert files, must be used with [--export-as-nse], [--export-as-ori], [--file2C], [--nse2C] and must be before these options.\n"\
+        "[-l] [--showline]: Display line-number, but bufsize of value must is 0 and before main option.\n"
     #define W0002 "Error: Parameter too few! [E_1001]\n"
     #define W0003 "Error: Must have a parameter or option! [E_1002]\n"
     #define W0004 "Error: Invalid parameter or option! [E_1003]\n"
@@ -39,7 +42,7 @@ Last change time on 2023.6.3  10:56
     #define W0011 "Error: Invalid file magic number. [E_2002]\n"
     #define W0012 "Warning: File of size get failed, export process not show. [W_2001]\n"
     #define W0013 "File export processing: \n"
-    #define W0014 "Warning: Option usage invalid. [W_1002]\n"
+    #define W0014 "Warning: Option usage is invalid, operation is stopped. [W_1002]\n"
     #define W0015 "Error: Must specify a filename. [E_1004]\n"
     #define W0016 "Warning: File too big, operation is stopped.(Maxsize: 16MB) [W_2002]\n"
     #define W0017 "File exporting...\n"
@@ -56,5 +59,6 @@ Last change time on 2023.6.3  10:56
     #define W0028 "Warning: OutputFile is exists, opertion is skipped. [W_2004]\n"
     #define W0029 "Converting file..."
     #define W0030 "Info: No file searched in this directory. [I_2002]\n"
+    #define W0031 "Warning: Bufsize of value not equal 0, line-number is not show.\n"
 #endif    // ZH_CN
 #endif    // TEXTWRITER_TEXTS_H

@@ -82,9 +82,6 @@ case "$1" in
     "compile-only")
         compile; exit 0
     ;;
-    *)
-        echo "参数 $1 不存在！"; exit 1
-    ;;
 esac
 
 # 先检查系统中是否安装有gcc和make，如果已安装则编译程序
