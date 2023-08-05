@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>选项列表</title>
+        <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="top">
+            <table class="topTab">
+                <tr>
+                    <td width="250">当前文档：选项列表</td>
+                    <td width="275">上一个：文档目录</td>
+                    <td width="275">下一个：基本命令操作</td>
+                    <td width="400"></td>
+                    <td width="40"><a href="./index.html"><img src="./img/prev.png" height="30px" width="30px" alt="prev"/></a></td>
+                    <td width="40"><a href="./index.html"><img src="./img/home.png" height="30px" width="30px" alt="home"/></a></td>
+                    <td width="40"><a href="./commandUsage.html"><img src="./img/next.png" height="30px" width="30px" alt="next"/></a></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <span class="title">选项列表</span>
+        <span style="color: red;text-align: right;font-size: 12px;">
+            表格版本：V11x-1 <br />适用的程序版本：V1.1.x
+        </span><br />
+        下面列出的是当前版本可用的选项以及相关的简短说明，单击第一列的选项名可查看详细的使用方法。
+        <table class="sheet">
+            <caption>cmdtr选项列表</caption>
+            <tr>
+                <td width="150">选项名称</td>
+                <td width="350">作用</td>
+                <td width="130">类型</td>
+                <td width="60">参数数量</td>
+                <td width="130">参数类型</td>
+                <td width="160">位置要求</td>
+                <td width="200">其他要求</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#wt"><span class="gist">--text</span><br /><span class="gist">-t</span></a></td>
+                <td>以文本形式保存输入的内容</td>
+                <td>主选项</td>
+                <td>1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#wa"><span class="gist">--ascii</span><br /><span class="gist">-a</span></a></td>
+                <td>以数字序列形式保存输入的内容</td>
+                <td>主选项</td>
+                <td>1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#ra"><span class="gist">--read-as-ascii</span></a></td>
+                <td>显示数字序列文件的原始内容</td>
+                <td>主选项</td>
+                <td>&geq;1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#rt"><span class="gist">--read-as-text</span></a></td>
+                <td>显示文本文件的内容</td>
+                <td>主选项</td>
+                <td>&geq;1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#sa"><span class="gist">--showall</span><br /><span class="gist">-A</span></a></td>
+                <td>显示文件的全部内容</td>
+                <td>主选项</td>
+                <td>&geq;1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径，且不会对数字序列文件进行转码</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#es"><span class="gist">--export-as-nse</span></a></td>
+                <td>转换为数字序列文件</td>
+                <td>主选项</td>
+                <td>1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#eo"><span class="gist">--export-as-ori</span></a></td>
+                <td>还原数字序列文件</td>
+                <td>主选项</td>
+                <td>2</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#ftc"><span class="gist">--file2C</span></a></td>
+                <td>将普通文件转换为C源文件</td>
+                <td>主选项</td>
+                <td>1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#ntc"><span class="gist">--nse2C</span></a></td>
+                <td>将数字序列文件转换为C源文件</td>
+                <td>主选项</td>
+                <td>1</td>
+                <td>字符串</td>
+                <td>无</td>
+                <td>参数应为文件名或路径</td>
+            </tr>
+            <tr>
+                <td><span class="gist">--help</span><br /><span class="gist">-h</span></td>
+                <td>显示帮助信息</td>
+                <td>特殊</td>
+                <td>0</td>
+                <td>无</td>
+                <td>应当单独出现</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#bs"></a><span class="gist">--bufsize</span></td>
+                <td>设置读取文件时所要显示的字符数，如果设为0，则一次性显示所有内容（默认值为1000）</td>
+                <td>附加选项</td>
+                <td>1</td>
+                <td>整数</td>
+                <td>无</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#ulim"><span class="gist">--unlimited</span></a></td>
+                <td>取消文件转换的最大限制</td>
+                <td>附加选项</td>
+                <td>0</td>
+                <td>无</td>
+                <td>无</td>
+                <td>应当与<span class="gist">--export-as-nse</span>配合使用。如果使用了批处理选项，则此选项应在主选项之前</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#cont"><span class="gist">--continue</span><br /><span class="gist">-c</span></a></td>
+                <td>文件续写</td>
+                <td>附加选项</td>
+                <td>0</td>
+                <td>无</td>
+                <td>应当在写入选项之前</td>
+                <td>无</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#bat"><span class="gist">--batch</span><br /><span class="gist">-b</span></a></td>
+                <td>批处理选项</td>
+                <td>附加选项</td>
+                <td>0</td>
+                <td>无</td>
+                <td>应当在转换选项之前</td>
+                <td>此时的转换选项参数应指定为目录或目录的路径</td>
+            </tr>
+            <tr>
+                <td><a href="./commandUsage.html#shl"><span class="gist">--showline</span><br /><span class="gist">-l</span></a></td>
+                <td>查看文件内容时显示行号</td>
+                <td>附加选项</td>
+                <td>0</td>
+                <td>无</td>
+                <td>应当在查看选项之前，且应当是在最前面出现</td>
+                <td>只有在<span class="gist">bufsize</span>为0的情况下才会生效</td>
+            </tr>
+        </table>
+        <hr />
+        <span class="foot">
+            <a href="./index.html">prev</a> |
+            <a href="./index.html">home</a> |
+            <a href="./commandUsage.html">next</a>
+        </span>
+        <span class="lightText_c">Copyright&copy;2023 NULL_703.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+    </body>
+</html>

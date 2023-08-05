@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>基本命令操作</title>
+        <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="top">
+            <table class="topTab">
+                <tr>
+                    <td width="250">当前文档：基本命令操作</td>
+                    <td width="275">上一个：选项列表</td>
+                    <td width="275">下一个：安装现有的二进制文件</td>
+                    <td width="400"></td>
+                    <td width="40"><a href="./optionLists.html"><img src="./img/prev.png" height="30px" width="30px" alt="prev"/></a></td>
+                    <td width="40"><a href="./index.html"><img src="./img/home.png" height="30px" width="30px" alt="home"/></a></td>
+                    <td width="40"><a href="./install-bin.html"><img src="./img/next.png" height="30px" width="30px" alt="next"/></a></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <span class="title">基本命令操作</span>
+        <span class="lesser">1. 基本命令语法</span> <br />
+        <span class="straight_matter">&nbsp;&nbsp;cmdtr的命令元素包括有选项和参数，选项通常以<span class="gist">-</span>或<span class="gist">--</span>为前缀，例如<span class="gist">--read-as-text</span>。参数通常在选项的后面，例如，在下面的命令行中，<span class="gist">-A</span>选项的后面所接的文件名均为参数。</span>
+        <pre class="codePad">cmdtr -A /etc/passwd /etc/fstab</pre>
+        <span class="straight_matter">&nbsp;&nbsp;语法格式为：</span>
+        <pre class="codePad">cmdtr [主选项] [附加选项] [附加选项参数]
+或：cmdtr [-l | --showline] [读取选项] [文件...]
+    cmdtr [主选项] [文件...]</pre>
+        <span class="straight_matter">&nbsp;&nbsp;选项包括有主选项和附加选项，主选项是命令执行时所主要实现的目标，在执行主选项时，可以使用附加选项进行修饰，使用附加选项可以提供一定的便利，但前提是命令中必须要有一个主选项。主选项应该只有一个，如果存在有多个主选项，则可能会出现意外的结果。主选项的参数通常是文件或目录的路径，而附加选项通常不需要添加参数。</span> <br />
+        <span class="straight_matter">&nbsp;&nbsp;此程序的选项、参数的顺序不可随意变动，下面列出的是一些常见的正确用例：</span>
+        <pre class="codePad">cmdtr -l -A /etc/passwd
+cmdtr --read-as-text /etc/passwd
+cmdtr --read-as-text /etc/passwd --bufsize 0
+cmdtr -c -t file1.txt
+cmdtr -b --export-as-nse /etc</pre>
+        <hr class="tranline"/>
+        <span class="lesser">2. 命令使用例</span><br />
+        此程序具有长选项与短选项两种类型，这可以从选项名前符号“<span class="gist">-</span>”的数量判断，下面的使用例将只使用短选项，但它们的效果与其对应的长选项是完全一致的。
+        <ul class="straight_matter">
+            <li>
+                <a name="wt"></a>
+                <b><span class="gist">--text</span>或<span class="gist">-t</span>选项</b> <br />
+                <span>&nbsp;&nbsp;此选项用于向文件中输入文本数据，但是只能顺序编辑，因此在编辑过程中需要特别注意。在编辑时，你可以使用一些转义序列，目前可以使用的转义序列请查看<a href="#">附录-编辑模式转义序列列表</a>。</span><br />
+                <span>&nbsp;&nbsp;在开始编辑一个文件时，你需要提供一个文件名，如果在命令中没有指定，则在编辑开始之前会有提示，请确保输入的文件名符合命名规范，否则将显示错误信息，如果你想跳过文件命名可以键入<span class="gist">&gt;</span>，此时程序将会在当前目录下新建一个名为<span class="gist">default.txt</span>的文件，但是，如果目录下已经存在有与默认文件名同名的文件将会要求你输入其它的文件名，直到文件名不同名为止。下面是该选项的使用例：</span>
+                <pre class="codePad">cmdtr -t
+cmdtr -t file.txt</pre>
+            </li>
+            <li>
+                <a name="wa"></a>
+                <b><span class="gist">--ascii</span>或<span class="gist">-a</span>选项</b> <br />
+                <span>&nbsp;&nbsp;向文件写入文本，文本中的字符将以数字序列的形式保存，编辑过程与前者相同。需要注意的是，保存的数字序列因命令行界面的字符编码而不同，如果输入的是非ASCII字符，则在其他操作系统的命令行界面中还原输入的内容时可能会出现乱码。使用例如下所示：</span>
+                <pre class="codePad">cmdtr -a
+cmdtr -a file.nse</pre>
+            </li>
+            <li>
+                <a name="ra"></a>
+                <b><span class="gist">--read-as-ascii</span>选项</b> <br />
+                <span>&nbsp;&nbsp;读取数字序列文件，将数字序列还原为原始字符后输出在屏幕上。注意，如果数字序列文件的文件头部被修改，将无法进行读取。使用例如下：</span>
+                <pre class="codePad">cmdtr --read-as-ascii file.nse</pre>
+                <span>&nbsp;&nbsp;当然，也可以同时读取多个文件，但只在<span class="gist">V1.1.2</span>以及之后的版本有效：</span>
+                <pre class="codePad">cmdtr --read-as-ascii file1.nse file2.nse</pre>
+                <span>&nbsp;&nbsp;读取模式默认分页查看，每一页显示1000个字符，如果要一次性显示文件的所有内容，可以尝试下面的命令：</span>
+                <pre class="codePad">cmdtr --read-as-ascii file.nse --bufsize 0</pre>
+            </li>
+            <li>
+                <a name="rt"></a>
+                <b><span class="gist">--read-as-text</span>选项</b> <br />
+                <span>&nbsp;&nbsp;读取文件内容，命令格式与上面的相同：</span>
+                <pre class="codePad">cmdtr --read-as-text /etc/passwd</pre>
+                <span>&nbsp;&nbsp;同时读取多个文件，同样也只是在<span class="gist">V1.1.2</span>以及之后的版本有效：</span>
+                <pre class="codePad">cmdtr --read-as-text /etc/passwd file.txt</pre>
+                <span>&nbsp;&nbsp;取消分页显示：</span>
+                <pre class="codePad">cmdtr --read-as-text /etc/passwd --bufsize 0</pre>
+            </li>
+            <li>
+                <a name="sa"></a>
+                <b><span class="gist">--showall</span>或<span class="gist">-A</span>选项</b> <br />
+                <span>&nbsp;&nbsp;一次性显示文件中所有的内容，但是并不能对数字序列文件进行转码，例如，下面的示例只能显示文件当中的全部数字序列：</span>
+                <pre class="codePad">cmdtr -A file.nse</pre>
+                <span>&nbsp;&nbsp;同时读取多个文件，和上面的一样，也只是在<span class="gist">V1.1.2</span>以及之后的版本有效：</span>
+                <pre class="codePad">cmdtr -A /etc/passwd file.txt</pre>
+                <span>&nbsp;&nbsp;此选项相当于<span class="gist">cmdtr --read-as-text file.txt --bufsize 0</span>。</span>
+            </li>
+            <li>
+                <a name="es"></a>
+                <b><span class="gist">--export-as-nse</span>选项</b> <br />
+                <span>&nbsp;&nbsp;将目标文件转换为数字序列文件，在批处理模式下，此选项的参数是目录名或目录的路径，转换后的文件将保存在当前的工作目录下，如果目标文件为空则不进行处理。由于转码后的数字序列文件相较于源文件会膨胀大约3到4倍的大小，且文件越大处理的速度越慢，所以此选项只能处理小于16MB的文件，如果要取消限制，可以在命令中添加<span class="gist">--unlimited</span>选项，但是在一般情况下不建议这样做。使用例如下：</span>
+                <pre class="codePad">cmdtr --export-as-nse /etc/passwd</pre>
+                <span>&nbsp;&nbsp;如果你想减少输出文件在硬盘上占用的存储空间，你可以对其进行压缩处理，此方法通常可以使数字序列文件缩减至与源文件差不多或略大的大小，如果在Linux下可以使用下面的shell脚本：</span>
+                <pre class="codePad"><span class="code_comment">#!/bin/bash</span>
+<span class="code_comment"># 此示例脚本可在转换文件的同时删除原文件以及压缩nse文件</span>
+
+delfile=<span class="code_number">0</span>
+compfile=<span class="code_number">1</span>
+
+<span class="code_keyword">function</span> <span class="code_func">processfile</span>&#40;&#41;
+&#123;
+    <span class="code_func">cmdtr</span> --export-as-nse <span class="code_string">&#34;$3&#34;</span>
+    <span class="code_comment"># 删除源文件</span>
+    <span class="code_keyword">if</span> &lbrack; <span class="code_string">&#34;$1&#34;</span> == <span class="code_number">1</span> &rbrack;&#59; <span class="code_keyword">then</span>
+        <span class="code_func">rm</span> <span class="code_string">&#34;$3&#34;</span>
+    <span class="code_keyword">fi</span>
+    <span class="code_comment"># 压缩数字序列文件，这会将当前目录下的所有nse文件进行压缩</span>
+    <span class="code_keyword">if</span> &lbrack; <span class="code_string">&#34;$2&#34;</span> == <span class="code_number">0</span> &rbrack;&#59; <span class="code_keyword">then</span>
+        <span class="code_func">tar</span> -zcvf <span class="code_string">&#34;</span>&dollar;&#123;3&#125;<span class="code_string">.tar.gz&#34;</span> *.nse</span>
+    <span class="code_keyword">fi</span>
+&#125;
+
+<span class="code_keyword">for</span> arg <span class="code_keyword">in</span> &dollar;&commat;
+<span class="code_keyword">do</span>
+    <span class="code_keyword">if</span> &lbrack; <span class="code_string">&#34;&dollar;arg&#34;</span> == <span class="code_string">&#34;--delfiles&#34;</span> &rbrack;&#59; <span class="code_keyword">then</span>
+        delfile=<span class="code_number">1</span>
+    <span class="code_keyword">elif</span> &lbrack; <span class="code_string">&#34;&dollar;arg&#34;</span> == <span class="code_string">&#34;--compress&#34;</span> &rbrack;&#59; <span class="code_keyword">then</span>
+        compfile=<span class="code_number">0</span>
+    <span class="code_keyword">else</span>
+        <span class="code_func">processfile</span> <span class="code_string">&#34;&dollar;delfile&#34; &#34;&dollar;compfile&#34; &#34;&dollar;arg&#34;</span>&#59; <span class="code_keyword">break</span>
+    <span class="code_keyword">fi</span>
+<span class="code_keyword">done</span></pre>
+                <span>&nbsp;&nbsp;脚本的使用方法为<span class="gist">bash [脚本名] [选项] [文件名]</span>，其中文件名应当只有一个。上面的脚本只是一个参考，在实际使用中可以根据自身的实际情况进行修改，以使其更适合您的使用习惯。</span>
+            </li>
+            <li>
+                <a name="eo"></a>
+                <b><span class="gist">--export-as-ori</span>选项</b> <br />
+                <span>&nbsp;&nbsp;此选项可将nse文件还原，在批处理模式下，此选项的参数是目录名或目录的路径。和前者一样，转换后的文件将会保存在当前目录下，在进行单文件转换时，需要再指定输出文件的名称。使用例如下：</span>
+                <pre class="codePad"><span class="code_comment"># 错误示范！</span>
+<span class="code_comment"># cmdtr --export-as-ori file.nse</span>
+<span class="code_comment"># 正确示例</span>
+cmdtr --export-as-ori file.nse file.txt
+cmdtr -b --export-as-ori ./</pre>
+            </li>
+            <li>
+                <a name="ftc"></a>
+                <b><span class="gist">--file2C</span>选项</b> <br />
+                <span>&nbsp;&nbsp;将文件以ASCII代码的形式写入C样式的数组，以将其嵌入到程序中，在批处理模式下，此选项的参数是目录名或目录的路径。使用例如下：</span>
+                <pre class="codePad">cmdtr --file2C /etc/passwd</pre>
+            </li>
+            <li>
+                <a name="ntc"></a>
+                <b><span class="gist">--nse2C</span>选项</b> <br />
+                <span>&nbsp;&nbsp;类似于前者，但输入文件应当是nse文件。使用例如下：</span>
+                <pre class="codePad">cmdtr --nse2C file.nse</pre>
+            </li>
+            <li>
+                <a name="bs"></a>
+                <b><span class="gist">--bufsize</span>选项</b> <br />
+                <span>&nbsp;&nbsp;指定分页显示文件时每一页所显示的字符数，如果指定的值为0，则取消分页显示，默认值为1000。使用例如下：</span>
+                <pre class="codePad">cmdtr --read-as-text /etc/passwd --bufsize 100</pre>
+                <span>&nbsp;&nbsp;注意，如果同时打开了多个文件，则在下一个文件读取的时候重新开始字符计数。例如有<span class="gist">a.txt</span>、<span class="gist">b.txt</span>、<span class="gist">c.txt</span>三个文件，三个文件所包含的字符数都低于1000，但它们所包含字符总数却大于1000，那么在按默认值（1000字符）分页的时候，三个文件的所有内容将会一次性输出到屏幕上。</span>
+            </li>
+            <li>
+                <a name="ulim"></a>
+                <b><span class="gist">--unlimited</span>选项</b> <br />
+                <span>&nbsp;&nbsp;取消在转换为nse文件时的大小限制，这可以使其处理大于16MB的文件，不过处理的时间将会比较长，并且将会占用较大的存储空间。使用例如下：</span>
+                <pre class="codePad">cmdtr --export-as-nse BTR[01].mp4 --unlimited</pre>
+                <span>&nbsp;&nbsp;注意，在批处理模式下该选项只能放在主选项之前。</span>
+            </li>
+            <li>
+                <a name="cont"></a>
+                <b><span class="gist">--continue</span>或<span class="gist">-c</span>选项</b> <br />
+                <span>&nbsp;&nbsp;续写文件，如果文件不存在则创建，如果当前目录下有同名文件将显示警告信息并退出程序。此选项需要在写入选项之前，续写部分的数据形式将会由写入选项决定。如果要续写的文件是一个数字序列文件，则写入模式不应是文本模式，否则，数字序列文件的新添加部分将会是文本而不是数字序列。使用例如下：</span>
+                <pre class="codePad">cmdtr -c -t file.txt
+cmdtr -c -a file.nse</pre>
+            </li>
+            <li>
+                <a name="bat"></a>
+                <b><span class="gist">--batch</span>或<span class="gist">-b</span>选项</b> <br />
+                <span>&nbsp;&nbsp;批处理选项，只对转换选项有效。当启用此选项的时候，转换选项的输入参数将只接收目录名或目录的路径，而不是文件名或文件路径，处理完成的文件将会保存在当前目录下。使用例如下：</span>
+                <pre class="codePad">cmdtr -b --export-as-nse ./</pre>
+                <span>&nbsp;&nbsp;在转换过程中，如果遇到了空文件或者当前目录下有可能与输出文件同名的文件则会直接跳过，并输出警告信息。<span class="gist">--export-as-ori</span>选项在此模式下只有一个参数。</span>
+            </li>
+            <li>
+                <a name="shl"></a>
+                <b><span class="gist">--showline</span>或<span class="gist">-l</span>选项</b> <br />
+                <span>&nbsp;&nbsp;在显示文件内容的同时在行首显示行数，此选项只对读取选项有效，且在打开文件时取消了分页显示，并且此选项应当在最前面。在同时打开多个文件的时候，在读取下一个新文件时行号将会重新计数。使用例如下：</span>
+                <pre class="codePad">cmdtr -l -A /etc/passwd
+cmdtr -l --read-as-ascii file.nse --bufsize 0
+cmdtr -l --read-as-text /etc/passwd --bufsize 0</pre>
+            </li>
+        </ul>
+        <hr />
+        <span class="foot">
+            <a href="./optionLists.html">prev</a> |
+            <a href="./index.html">home</a> |
+            <a href="./install-bin.html">next</a>
+        </span>
+        <span class="lightText_c">Copyright&copy;2023 NULL_703.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+    </body>
+</html>

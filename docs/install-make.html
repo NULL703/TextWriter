@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>从源代码编译安装——Makefile</title>
+        <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="top">
+            <table class="topTab">
+                <tr>
+                    <td width="290">当前文档：从源代码编译安装——Makefile</td>
+                    <td width="275">上一个：安装二进制文件</td>
+                    <td width="275">下一个：从源代码编译安装——CMake</td>
+                    <td width="360"></td>
+                    <td width="40"><a href="./install-bin.html"><img src="./img/prev.png" height="30px" width="30px" alt="prev"/></a></td>
+                    <td width="40"><a href="./index.html"><img src="./img/home.png" height="30px" width="30px" alt="home"/></a></td>
+                    <td width="40"><a href="./install-cmake.html"><img src="./img/next.png" height="30px" width="30px" alt="next"/></a></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+            <span class="title">从源代码编译安装——Makefile</span>
+            <span class="straight_matter">
+                <span class="lesser">1. 前言</span> <br />
+                &nbsp;&nbsp;cmdtr提供了很多从源代码编译的方案，包括有Makefile、CMake以及安装脚本，用户可根据需要选择合适的方式编译源代码并安装。在开始之前，请确保你的操作系统中安装有gcc和CMake。在本文档提供的方法中，CMake为可选项。<br />
+                &nbsp;&nbsp;需要注意的是，在Windows下如果安装的是MinGW，则<span class="gist">make</span>命令需要改为<span class="gist">mingw32-make</span>。<br />
+                &nbsp;&nbsp;安装脚本可以一次性完成源代码的编译以及二进制文件的安装，成功安装的前提是该脚本是以root身份运行的。要想一次性完成编译和安装，只需要直接运行它。（Windows下无法使用此脚本）<br />
+                <span class="lesser">2. 编译</span> <br />
+                &nbsp;&nbsp;操作方法很简单，在Linux操作系统中只需要在源代码根目录下键入<span class="gist">make</span>命令即可，在Windows下需要指定特定平台的make文件，使用方法如下所示（如果无法使用<span class="gist">make</span>命令可以将其替换为<span class="gist">mingw32-make</span>或将其二进制文件的名称改为<span class="gist">make</span>）：
+                <pre class="codePad">make -f win32.make</pre>
+                &nbsp;&nbsp;在编译完成后，源代码的根目录下会出现<span class="gist">bin</span>目录，如果没有出现编译、连接错误则会在该目录下生成<span class="gist">libformula.so（.dll）</span>和<span class="gist">cmdtr（.exe）</span>两个文件，这时就可以进行下一步的安装操作。<br />
+                <span class="lesser">3. 安装</span> <br />
+                &nbsp;&nbsp;安装过程与上一篇文档的方法差不多，请参照上一篇文档的<a href="./install-bin.html" class="doclink">第二部分</a>。
+            </span>
+        <hr />
+        <span class="foot">
+            <a href="./install-bin.html">prev</a> |
+            <a href="./index.html">home</a> |
+            <a href="./install-cmake.html">next</a>
+        </span>
+        <span class="lightText_c">Copyright&copy;2023 NULL_703.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+    </body>
+</html>

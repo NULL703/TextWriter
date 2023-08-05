@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>安装二进制文件</title>
+        <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="top">
+            <table class="topTab">
+                <tr>
+                    <td width="250">当前文档：安装二进制文件</td>
+                    <td width="275">上一个：基本命令操作</td>
+                    <td width="275">下一个：从源代码编译安装——Makefile</td>
+                    <td width="400"></td>
+                    <td width="40"><a href="./commandUsage.html"><img src="./img/prev.png" height="30px" width="30px" alt="prev"/></a></td>
+                    <td width="40"><a href="./index.html"><img src="./img/home.png" height="30px" width="30px" alt="home"/></a></td>
+                    <td width="40"><a href="./install-make.html"><img src="./img/next.png" height="30px" width="30px" alt="next"/></a></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+            <span class="title">安装现有的二进制文件</span>
+            注：本文档将侧重于介绍Linux下的安装方法。<br />
+            <span class="lesser">1. 获取二进制文件</span> <br />
+            <span class="straight_matter">&nbsp;&nbsp;在<a href="https://github.com/NULL703/TextWriter/releases">https://github.com/NULL703/TextWriter/releases</a>可以找到最新版本或旧版本的发布内容，其中包括源代码和二进制文件。在选择二进制文件时，请选择与你的操作系统对应的版本；如果要从源代码开始编译，请选择<span class="gist">cmdtr-src-full-[版本号].tar.gz</span>。<span class="note">请勿直接克隆存储库，否则编译将无法通过！</span></span><br />
+            <span class="lesser">2. 安装与配置</span> <br />
+            <span class="straight_matter">&nbsp;&nbsp;在cmdtr的二进制程序包中包含有两个文件，一个是主程序，另一个则是相关的依赖库。在Windows下可以将其放在同一个目录中，但在Linux下需要将其放在系统指定的目录下，或者设置环境变量，由于前者的操作方法较为简单，且易于理解，所以本文档将采用第一种方法进行安装。</span><br />
+            <span class="straight_matter">&nbsp;&nbsp;操作方法很简单，首先，解压缩程序包中的文件，然后以管理员身份将其复制到指定的位置：</span>
+            <pre class="codePad">cp cmdtr /bin
+cp libformula.so /lib</pre>
+            <pre class="worning"><span class="note">注意：</span>
+&nbsp;&nbsp;在红帽系的发行版中，libformula的存放位置应为<span class="gist">/lib64</span>或<span class="gist">/usr/lib64</span>，在文件复制完成后请执行<span class="gist">ldconfig</span>命令，以确保动态链接库能被正确调用。</pre>
+            <span class="straight_matter">&nbsp;&nbsp;在完成以上操作后，即可在任意目录下使用此命令。在Windows下，如果要得到同样的效果需要将二进制文件所在的位置加入<span class="gist">PATH</span>环境变量，具体方法请自行查找。</span>
+        <hr />
+        <span class="foot">
+            <a href="./commandUsage.html">prev</a> |
+            <a href="./index.html">home</a> |
+            <a href="./install-make.html">next</a>
+        </span>
+        <span class="lightText_c">Copyright&copy;2023 NULL_703.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+    </body>
+</html>

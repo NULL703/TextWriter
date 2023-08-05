@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>转义序列列表</title>
+        <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="top">
+            <table class="topTab">
+                <tr>
+                    <td width="250">当前文档：转义序列列表</td>
+                    <td width="275">上一个：从源代码编译安装——CMake</td>
+                    <td width="275">下一个：/</td>
+                    <td width="400"></td>
+                    <td width="40"><a href="./install-cmake.html"><img src="./img/prev.png" height="30px" width="30px" alt="prev"/></a></td>
+                    <td width="40"><a href="./index.html"><img src="./img/home.png" height="30px" width="30px" alt="home"/></a></td>
+                    <td width="40"><img src="./img/ivnext.png" height="30px" width="30px" alt="next"/></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+            <span class="title">附录：编辑模式中的转义序列及含义列表</span>
+            <span style="color: red;text-align: right;font-size: 12px;">
+                表格版本：V1.1-ESC <br />适用的程序版本：V1.1.x
+            </span><br />
+            以下的转义序列只在写入模式中生效，且<span class="note">只能出现在该行的末尾</span>（<span class="gist">^#</span>除外），或者是单独成行，否则将会出现意外的结果。
+            <table class="sheet">
+                <caption>转义序列及含义列表</caption>
+                <tr>
+                    <td width="180">转义序列</td>
+                    <td width="900">作用或含义</td>
+                    <td width="200">所能支持的最低版本</td>
+                </tr>
+                <tr>
+                    <td><span class="gist">^#</span></td>
+                    <td class="tblongtxt">屏蔽其后面的所有字符，直到该行结束，被屏蔽的字符将不会写入文件。如果单独出现在一行，则效果将会和<span class="gist">^#EXT</span>的效果一样。</td>
+                    <td>全版本支持</td>
+                </tr>
+                <tr>
+                    <td><span class="gist">^#EXT</span></td>
+                    <td class="tblongtxt">退出编辑模式并保存已经输入的内容。</td>
+                    <td>全版本支持</td>
+                </tr>
+                <tr>
+                    <td><span class="gist">^#NSV</span></td>
+                    <td class="tblongtxt">放弃保存并删除当前编辑的文件。<span class="note">如果是以续写模式编辑该文件，则该文件的原始内容也会一同丢失，请谨慎使用！</span></td>
+                    <td><span class="gist">V1.1.2</span></td>
+                </tr>
+                <tr>
+                    <td><span class="gist">^#RES</span></td>
+                    <td class="tblongtxt">放弃保存输入的内容，被编辑的文件和其中的原始内容将会保留。</span></td>
+                    <td>计划在未来的版本中添加</td>
+                </tr>
+                <tr>
+                    <td><span class="gist">^#[NUM]</span></td>
+                    <td class="tblongtxt">在该位置插入一个与转义前缀后的数字对应的ASCII字符，并忽略该行末尾的回车符（在使用时要将<span class="gist">[NUM]</span>替换为相应的数字，例如<span class="gist">^#48</span>）。<span class="note">数字不应超过0~127的范围，否则将不会有任何效果！</span></span></td>
+                    <td>计划在未来的版本中添加</td>
+                </tr>
+            </table>
+        <hr />
+        <span class="foot">
+            <a href="./install-cmake.html">prev</a> |
+            <a href="./index.html">home</a> |
+            <span class="invalid">next</span>
+        </span>
+        <span class="lightText_c">Copyright&copy;2023 NULL_703.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+    </body>
+</html>

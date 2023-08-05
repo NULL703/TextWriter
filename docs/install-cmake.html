@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>从源代码编译安装——CMake</title>
+        <link href="./style/style.css" type="text/css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div class="top">
+            <table class="topTab">
+                <tr>
+                    <td width="290">当前文档：从源代码编译安装——CMake</td>
+                    <td width="275">上一个：从源代码编译安装——Makefile</td>
+                    <td width="275">下一个：转义序列列表</td>
+                    <td width="360"></td>
+                    <td width="40"><a href="./install-make.html"><img src="./img/prev.png" height="30px" width="30px" alt="prev"/></a></td>
+                    <td width="40"><a href="./index.html"><img src="./img/home.png" height="30px" width="30px" alt="home"/></a></td>
+                    <td width="40"><a href="./ESCList.html"><img src="./img/next.png" height="30px" width="30px" alt="next"/></a></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+            <span class="title">从源代码编译安装——CMake</span>
+            <span class="straight_matter">
+                <span class="lesser">1. 前言</span> <br />
+                &nbsp;&nbsp;此文档将介绍使用CMake编译安装cmdtr的方法，在开始前，请确保你的系统中安装了gcc和CMake。<br />
+                <span class="lesser">2. 编译</span> <br />
+                &nbsp;&nbsp;首先，进入源代码的根目录，新建一个<span class="gist">build</span>目录，然后进入。<br />
+                &nbsp;&nbsp;进入<span class="gist">build</span>目录后，键入如下命令：
+                <pre class="codePad">cmake ..</pre>
+                &nbsp;&nbsp;随后CMake将开始检查和配置，如果没有问题，将会当前目录下生成一个Makefile文件。如果你不想让<span class="gist">make</span>命令使用默认的编译器配置，你可以使用<span class="gist">-G</span>选项指定。在生成Makefile后在命令行中键入<span class="gist">make</span>命令对源代码进行编译，编译通过后，生成的二进制文件将会保存在源代码根目录下的<span class="gist">bin</span>目录中。<br />
+                <span class="lesser">3. 安装</span> <br />
+                &nbsp;&nbsp;此部分请参照：<a href="./install-bin.html" class="doclink">安装现有的二进制文件</a>
+            </span>
+        <hr />
+        <span class="foot">
+            <a href="./install-make.html">prev</a> |
+            <a href="./index.html">home</a> |
+            <a href="./ESCList.html">next</a>
+        </span>
+        <span class="lightText_c">Copyright&copy;2023 NULL_703.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+    </body>
+</html>
