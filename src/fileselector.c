@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.6.3  11:26
+Last change time on 2023.8.24  14:42
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
@@ -65,13 +65,6 @@ void pathInit(const char* basepath)
     }
     for(int i = 0, j = 0; i < basepath_len; i++)
     {
-#ifdef __MSVC
-        if(path[i] == '*')
-        {
-            j -= 1; basepath_len -= 1;
-            continue;
-        }
-#endif    // __MSVC
         path[j] = basepath[i]; j++;
     }
 #ifdef __MSVC
@@ -80,6 +73,7 @@ void pathInit(const char* basepath)
         path[basepath_len] = '\\';
         pathlen += 1;
     }
+    pathlen -= 2;
 #else
     if(path[basepath_len - 1] != '/')
     {
@@ -137,6 +131,17 @@ const char* add_NSE_Extname(const char* origfilename)
     charcount = addMainFilename(origfilename, charcount);
     ofilename[charcount++] = '.';
     ofilename[charcount++] = 'n'; ofilename[charcount++] = 's'; ofilename[charcount++] = 'e';
+    ofilename[charcount++] = '\0'; 
+    return ofilename;
+}
+
+const char* add_HEX_Extname(const char* origfilename)
+{
+    int charcount = 0;
+    cleanName();
+    charcount = addMainFilename(origfilename, charcount);
+    ofilename[charcount++] = '.';
+    ofilename[charcount++] = 'h'; ofilename[charcount++] = 'e'; ofilename[charcount++] = 'x';
     ofilename[charcount++] = '\0'; 
     return ofilename;
 }
@@ -199,7 +204,11 @@ int execFileConvert(int option, SHK_BOOL allowBigfile, int bufsize)
                 exportC_Style_Array(infile, addFilenameInPath(head->fname), add_C_Extname(head->fname), SHK_TRUE); break;
             case OPT_NSETOC:
                 nse2C_Style_Array(infile, addFilenameInPath(head->fname), add_C_Extname(head->fname), SHK_TRUE); break;
-            default: printf("%s%s%s", F_RED, W0024, NORMAL); return -1;
+            case OPT_TOHEX:
+                blockHEX_Converter(infile, addFilenameInPath(head->fname), add_HEX_Extname(head->fname), SHK_TRUE); break;
+            case OPT_DEHEX:
+                blockHEX_Deconverter(infile, addFilenameInPath(head->fname), del_NSE_Extname(head->fname), SHK_TRUE); break;
+            default: printf("%s%s%s", F_RED, W0024, NORMAL); return 128;
         }
         if(head->ID == prev->ID) break;
         head = head->nextobj;
@@ -241,7 +250,7 @@ int batchSelectFilenames(const char* dirname, int option, SHK_BOOL allowBigfile,
     if(fileID == 0)
     {
         printf("%s%s%s", F_LIGHT_BLUE, W0030, NORMAL);
-        return 24;
+        return 7;
     }else{
         prev->nextobj = NULL;
     }

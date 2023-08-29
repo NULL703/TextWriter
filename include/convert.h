@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.1  19:43
 Created by NULL_703
-Last change time on 2023.5.27  16:46
+Last change time on 2023.8.12  15:02
 ************************************************************************/
 #ifndef TEXTWRITER_CONVERT_H
 #define TEXTWRITER_CONVERT_H
@@ -21,5 +21,7 @@ int restoreNSEfile(FILE* file, const char* filename, const char* outputFilename,
 int exportC_Style_Array(FILE* file, const char* filename, const char* outfile, SHK_BOOL batchMode);
 int nse2C_Style_Array(FILE* file, const char* filename, const char* outfile, SHK_BOOL batchMode);
 unsigned int fileSizeof(const char* filename);
+int blockHEX_Converter(FILE* origfile, const char* filename, const char* outfile, SHK_BOOL batmode);
+int blockHEX_Deconverter(FILE* hexfile, const char* filename, const char* outfile, SHK_BOOL batmode);
 
 #endif    // TEXTWRITER_CONVERT_H

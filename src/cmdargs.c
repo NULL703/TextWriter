@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:20
 Created by NULL_703
-Last change time on 2023.6.9  9:09
+Last change time on 2023.8.14  14:55
 ************************************************************************/
 #include <main.h>
 #include <writer.h>
@@ -13,14 +13,16 @@ Last change time on 2023.6.9  9:09
 
 SHK_BOOL haveLimitedarg = SHK_FALSE;
 SHK_BOOL showline = SHK_FALSE;
-int sigOpt[0x15] = {1, 2, 3, 4, 5, 6, 9, 10, 13, 14};    // 只能单独使用的关键选项ID
+int sigOpt[0x15] = {1, 2, 3, 4, 5, 6, 9, 10, 13, 14, 23, 24, 25, 26};    // 只能单独使用的关键选项ID
 const char propts[0x20][0x20] = {
     /* ID range: 0 ~ 8 */
     "", "--ascii", "-a", "--text", "-t", "--read-as-ascii", "--read-as-text", "--help", "-h",
     /* ID range: 9 ~ 14 */
     "--export-as-nse", "--export-as-ori", "--bufsize", "--unlimited", "--file2C", "--nse2C",
-    /* ID range 15 ~ 22 */
-    "-A", "--showall", "-c", "--continue", "-b", "--batch", "--showline", "-l"
+    /* ID range 15 ~ 23 */
+    "-A", "--showall", "-c", "--continue", "-b", "--batch", "--showline", "-l", "--export-as-hex",
+    /* ID range 24 ~ 26 */
+    "-H", "--dehex", "-d"
 };
 
 // 修饰选项对应的默认状态值
@@ -37,7 +39,7 @@ prange pars = {0, 0};
 int argsMatch(const char* args)
 {
     int arrayPointer = 0;
-    while(arrayPointer != 0x1a)
+    while(arrayPointer != 0x1f)
     {
         if(strcmp(args, propts[arrayPointer]) == 0) return arrayPointer;
         arrayPointer++;
@@ -56,47 +58,32 @@ SHK_BOOL argIsMain(int argID)
     return SHK_FALSE;
 }
 
-/*
-    NOTE: 当前暂时无法得知某些情况下拓展名无法与主文件名合并的问题来源，对此问题的定位还在进行中。
-*/
 char* changeFilename(const char* origFileName, const char* mode)
 {
     static char res[0xff] = "";
-    if(shk_strlen(origFileName) + shk_strlen(mode) >= 0xff)
+    int len = shk_strlen(origFileName);
+    int dirdiv = shk_chcount(origFileName, '\\') + shk_chcount(origFileName, '/');
+    int reldiv = 0;
+    int chindex = 0;
+    for(int i = 0; i < len; i++)
     {
-        printf("%s%s%s", F_RED, W0020, NORMAL);
-        exit(4);
-    }
-    for(int i = 0, j = 0; i < shk_strlen(origFileName); i++, j++)
-    {
-        if((shk_incscmp("..", origFileName) == SHK_TRUE || origFileName[0] == '.') && i == 0)
-            i += 2;
-        if(origFileName[i] == '\\' || origFileName[i] == '/')
+        if(origFileName[i] == '\\' || origFileName[i] == '/') reldiv++;
+        if(reldiv == dirdiv && dirdiv != 0)
         {
-            j = -1;
-            res[1] = '\0';
-            continue;
-        }
-        res[j] = origFileName[i];
-        if((origFileName[i] == '.' || i == shk_strlen(origFileName)) && shk_scmp(mode, "NSE"))
-        {
-            res[j] = origFileName[i];
-            if(origFileName[i] != '.') res[j++] = '.';
-            j++;
-            res[j++] = 110;    // n
-            res[j++] = 115;    // s
-            res[j++] = 101;    // e
-            break;
-        }
-        if((origFileName[i] == '.' || i == shk_strlen(origFileName)) && shk_scmp(mode, "C"))
-        {
-            res[j] = origFileName[i];
-            if(origFileName[i] != '.') res[j++] = '.';
-            j++;
-            res[j++] = 99;    // c
+            for(int j = 0, k = ++i; j < len; j++, k++)
+                res[j] = origFileName[k];
             break;
         }
     }
+    if(dirdiv == 0)
+    {
+        for(int l = 0; l < len; l++)
+            res[l] = origFileName[l];
+    }
+    chindex = shk_strlen(res) - 1;
+    for(int n = 0; n < shk_strlen(mode); n++)
+        res[++chindex] = mode[n];
+    res[++chindex] = '\0';
     return res;
 }
 
@@ -179,6 +166,8 @@ int convertMainOptionID(int tmpID)
         case 6: return OPT_TODAT;
         case 7: return OPT_TOC;
         case 8: return OPT_NSETOC;
+        case 9: return OPT_TOHEX;
+        case 10: return OPT_DEHEX;
         default: return -1;
     }
 }
@@ -206,18 +195,26 @@ int lastexec(int laID, const char** argv)
             return batchReadfile(argv, pars.endID, pars.startID, READTEXT); break;
         }
         case 5:
-            return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "NSE"), allowBigfile, SHK_FALSE);
+            return asciiExport(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], ".nse"), allowBigfile, SHK_FALSE);
         case 6: {
             if(!fileSpecifyCheck(argv[pars.startID + 1])) return 2;
             return restoreNSEfile(inputfile, argv[pars.startID], argv[pars.startID + 1], SHK_FALSE);
         }
         case 7: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
-            return exportC_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"), SHK_FALSE);
+            return exportC_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], ".c"), SHK_FALSE);
         }
         case 8: {
             if(!fileSpecifyCheck(argv[pars.startID])) return 2;
-            return nse2C_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], "C"), SHK_FALSE);
+            return nse2C_Style_Array(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], ".c"), SHK_FALSE);
+        }
+        case 9: {
+            if(!fileSpecifyCheck(argv[pars.startID])) return 2;
+            return blockHEX_Converter(inputfile, argv[pars.startID], changeFilename(argv[pars.startID], ".hex"), SHK_FALSE);
+        }
+        case 10: {
+            if(!fileSpecifyCheck(argv[pars.startID])) return 2;
+            return blockHEX_Deconverter(inputfile, argv[pars.startID], argv[pars.startID + 1], SHK_FALSE);
         }
         default: printf("%s%s%s", F_RED, W0004, NORMAL); return 2;
     }
@@ -339,6 +336,20 @@ int argsProcess(int argc, const char** argv)
                     return 21;
                 }
                 showline = SHK_TRUE; break;
+            }
+            case 23:
+            case 24: {
+                argIsNull(argv, argIndex, 2); tempID = 9; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(dirOpt == SHK_TRUE)
+                    return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
+                break;
+            }
+            case 25:
+            case 26: {
+                argIsNull(argv, argIndex, 2); tempID = 10; IDrange = SHK_TRUE; pars.startID = argIndex + 1;
+                if(dirOpt == SHK_TRUE)
+                    return batchSelectFilenames(argv[argIndex + 1], convertMainOptionID(tempID), allowBigfile, textblockSize);
+                break;
             }
             default: {
                 printf("%s%s%s", F_RED, W0004, NORMAL);

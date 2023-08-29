@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.6.8  10:05
+Last change time on 2023.8.20  11:32
 ************************************************************************/
 #include <stdlib.h>
 #include <time.h>
@@ -110,7 +110,7 @@ SHK_BOOL open_Infile(const char* fname)
     return SHK_TRUE;
 }
 
-int isEscape()
+int isEscape(int wrmode)
 {
     SHK_BOOL NextlineStatus = SHK_FALSE;
     char prespc;
@@ -136,7 +136,14 @@ int isEscape()
         }
         statusCode = spcharMatch(spchar, outfile);
     }else{
-        fwrite(&prespc, sizeof(prespc), 1, outfile);
+        if(wrmode == WTEXT)
+        {
+            fprintf(outfile, "^");
+            fwrite(&prespc, sizeof(prespc), 1, outfile);
+        }else{
+            fprintf(outfile, ", 94, %d", (int)prespc);
+        }
+        statusCode = -1;
     }
     return statusCode;
 }
@@ -161,18 +168,18 @@ int filenameFromArgs(int writeMode, const char* fname)
 int continueWrite(int writeMode, const char* fname)
 {
     int errCode = 0;
-    SHK_BOOL exist_status = SHK_FALSE;
+    SHK_BOOL unexist_status = SHK_FALSE;
     newfile_mode = SHK_FALSE;
     if(access(fname, 0) == -1)
     {
         printf("%s%s%s", F_LIGHT_BLUE, W0025, NORMAL);
-        exist_status = SHK_TRUE;
+        unexist_status = SHK_TRUE;
     }
     if(shk_strlen(fname) > 0xfa) {printf("%s%s%s", F_RED, W0020, NORMAL); return 4;}
     switch(writeMode)
     {
         case WTEXT: {
-            if(exist_status) return textWriter();
+            if(unexist_status) return textWriter();
             errCode = textRead(fname, 0, SHK_FALSE);
             fileNameChange(fname, SHK_FALSE);
             if(errCode != 0) return errCode;
@@ -180,7 +187,7 @@ int continueWrite(int writeMode, const char* fname)
             return textWriter();
         }
         case WASCII: {
-            if(exist_status) return asciiWriter();
+            if(unexist_status) return asciiWriter();
             errCode = asciiRead(fname, 0, SHK_FALSE);
             fileNameChange(fname, SHK_TRUE);
             if(errCode != 0) return errCode;
@@ -203,14 +210,12 @@ int asciiWriter()
     }
     if(!open_Infile(filename)) return 1;
     printf("%s", W0008);
-    if(!newfile_mode) fprintf(outfile, " ,");
-    else
-        fprintf(outfile, "07, 03");    // 为后期版本保留的文件魔数
+    if(newfile_mode) fprintf(outfile, "07, 03");    // 为后期版本保留的文件魔数
     while(1)
     {
         atch = getchar();
         if(atch == '^')
-            if(isEscape() != 0) continue;
+            if(isEscape(WASCII) != 0) continue;
         fprintf(outfile, ", %d", (int)atch);
         // 距离上一次刷新缓冲区或打开文件超过1分钟则刷新缓冲区
         if(time(NULL) - editTime > 60)
@@ -238,7 +243,7 @@ int textWriter()
     {
         tch = getchar();
         if(tch == '^')
-            if(isEscape() != 0) continue;
+            if(isEscape(WTEXT) != 0) continue;
         fwrite(&tch, sizeof(tch), 1, outfile);
         // 距离上一次刷新缓冲区或打开文件超过1分钟则刷新缓冲区
         if(time(NULL) - editTime > 60)

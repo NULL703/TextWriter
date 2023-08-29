@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2023.6.8  16:29
+Last change time on 2023.8.29  17:05
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
@@ -25,7 +25,9 @@ Last change time on 2023.6.8  16:29
         "[-A] [--showall]: 一次性显示文件的全部内容。\n"\
         "[-c] [--continue]: 续写指定的文件，必须与[-a], [--ascii], [-t], [--text]配合使用，且必须在这些选项的前面。\n"\
         "[-b] [--batch]: 批量转换文件，必须与[--export-as-nse], [--export-as-ori], [--file2C], [--nse2C]配合使用，且必须在这些选项的前面。\n"\
-        "[-l] [--showline]: 显示行号，但是bufsize的值必须为0，且应该在主选项之前。\n"
+        "[-l] [--showline]: 显示行号，但是bufsize的值必须为0，且应该在主选项之前。\n"\
+        "[-H] [--export-as-hex]: 将文件转储为hex文件。\n"\
+        "[-d] [--dehex]: 还原hex文件。\n"
     #define W0002 "错误：参数过少！[E_1001]\n"
     #define W0003 "错误：必须要有一个参数或选项！[E_1002]\n"
     #define W0004 "错误：无效的参数或选项！[E_1003]\n"
@@ -56,4 +58,6 @@ Last change time on 2023.6.8  16:29
     #define W0029 "正在转换文件..."
     #define W0030 "信息：在此目录下没有搜索到文件。[I_2002]\n"
     #define W0031 "警告：缓冲大小不为0，行数将不显示。[W_1003]\n"
+    #define W0032 "警告：HEX序列总数不为偶数，最后一个项将被丢弃。[W_2005]\n"\
+        "\033[0;36mNote: 由此程序生成的hex文件通常不会出现此情况，这意味着该文件可能不是自动生成的或者文件被人为改动，而输出文件也可能会有部分内容不可读。\033[m\n"
 #endif    // ZH_CN_H

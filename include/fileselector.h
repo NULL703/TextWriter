@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.3.20  13:45
+Last change time on 2023.8.14  14:28
 ************************************************************************/
 #ifndef TEXTWRITER_FILESELECTOR_H
 #define TEXTWRITER_FILESELECTOR_H
@@ -13,6 +13,8 @@ Last change time on 2023.3.20  13:45
 #define OPT_TODAT        1    // NSE转普通文件
 #define OPT_TOC          2    // 普通文件转C源文件
 #define OPT_NSETOC       3    // NSE转C源文件
+#define OPT_TOHEX        4    // 普通文件转HEX
+#define OPT_DEHEX        5    // HEX文件转普通文件
 
 typedef struct fileobjs{
     char fname[0xff];
