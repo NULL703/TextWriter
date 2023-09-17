@@ -3,9 +3,8 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.9.3  16:30
 Created by NULL_703
-Last change time on 2023.6.8  12:45
+Last change time on 2023.9.10  9:58
 ************************************************************************/
-#include <stdlib.h>
 #include <filereader.h>
 #include <main.h>
 

@@ -3,7 +3,7 @@
 # Copyright (C) 2022-2023 NULL_703. All rights reserved.
 # Created on 2022.7.9  12:44
 # Created by NULL_703
-# Last change time on 2023.4.16  10:58
+# Last change time on 2023.9.17  15:11
 #*************************************************************************
 cpp := g++
 gc := gcc
@@ -11,7 +11,7 @@ cflag := -O2 -std=c99 -Wall -DZH_CN -s -I ./include
 flag := -O2 -std=c++11 -Wall -DZH_CN -s -I ./include
 bin := cmdtr
 lib := libformula.so
-obj := main.o cmdargs.o filereader.o writer.o convert.o fileselector.o
+obj := main.o cmdargs.o filereader.o writer.o convert.o fileselector.o bakfile.o
 
 all: $(bin) $(lib)
 	mv $(bin) "./bin"

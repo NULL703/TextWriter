@@ -3,15 +3,13 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.3.2  21:50
 Created by NULL_703
-Last change time on 2023.8.24  14:42
+Last change time on 2023.9.10  9:52
 ************************************************************************/
 #include <main.h>
 #include <convert.h>
 #include <fileselector.h>
 // 如果在Visual Studio环境下编译此项目，请在编译时添加宏定义"__MSVC"。
-#ifdef __MSVC
-    #include <windows.h>
-#else
+#ifndef __MSVC
     #include <dirent.h>
     DIR* dirs = NULL;
     struct dirent* dent = NULL;

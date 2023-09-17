@@ -3,18 +3,18 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.8.20  11:32
+Last change time on 2023.9.17  15:08
 ************************************************************************/
-#include <stdlib.h>
 #include <time.h>
+#include <ctype.h>
 #include <main.h>
 #include <writer.h>
 #include <filereader.h>
+#include <bakfile.h>
 
-char spchars[0x5][0xf] = {"", "EXT", "NSV"};
-char tempbuf[0xff];
+char spchars[0x5][0xf] = {"", "EXT", "NSV", "RES"};
 char filename[0xff] = "default.txt";
-int tempbufPointer = 0;
+extern char bakname[8];
 SHK_BOOL newfile_mode = SHK_TRUE;
 SHK_BOOL haveFilename = SHK_FALSE;
 FILE* outfile;
@@ -36,20 +36,44 @@ void fileNameChange(const char* objName, SHK_BOOL nseMode)
     }
 }
 
+int wrESC(const char* spc, FILE* fileptr, SHK_BOOL wrmode)
+{
+    char spchar;
+    for(int i = 0; i < shk_strlen(spc); i++)
+        if(!isalnum(spc[i])) return -1;
+    spchar = (char)atoi(spc);
+    if(spchar > 127) return -1;    // 只能接受0 ~ 127的数值
+    if(wrmode == WTEXT)
+    {
+        // 文本模式写入字符
+        fwrite(&spchar, 1, sizeof(spchar), fileptr);
+    }else{
+        // NSE模式直接插入序列
+        fprintf(fileptr, ", %s", spc);
+    }
+    return 1;
+}
+
 int spcharEx(int spcharIndex, FILE* fileptr)
 {
     switch(spcharIndex)
     {
         case 0:
         // ESC: EXT Fn: Quit program.
-        case 1: fclose(fileptr); exit(0);
+        case 1: {
+            fclose(fileptr);
+            if(!newfile_mode) remove(bakname);
+            exit(0);
+        }
         // ESC: NSV Fn: Not save file and exit.
         case 2: fclose(fileptr); remove(filename); exit(0);
+        // ESC: RES Fn: Exit and restore file.
+        case 3: fclose(fileptr); recfile(filename); exit(0);
         default: return -1;
     }
 }
 
-int spcharMatch(const char* spc, FILE* fileptr)
+int spcharMatch(const char* spc, FILE* fileptr, SHK_BOOL wrmode)
 {
     int spcharIndex = 0;
     while(spcharIndex != 5)
@@ -57,6 +81,7 @@ int spcharMatch(const char* spc, FILE* fileptr)
         if(strcmp(spchars[spcharIndex], spc) == 0) break;
         spcharIndex++;
     }
+    if(spcharIndex == 5 && shk_strlen(spc) <= 3) wrESC(spc, fileptr, wrmode);
     return spcharEx(spcharIndex, fileptr);
 }
 
@@ -134,7 +159,7 @@ int isEscape(int wrmode)
             // 屏蔽转义前缀后面的所有字符，直到遇到回车字符为止。（类似于编程语言的注释）
             while('\n' != getchar());
         }
-        statusCode = spcharMatch(spchar, outfile);
+        statusCode = spcharMatch(spchar, outfile, wrmode);
     }else{
         if(wrmode == WTEXT)
         {
@@ -179,17 +204,17 @@ int continueWrite(int writeMode, const char* fname)
     switch(writeMode)
     {
         case WTEXT: {
+            fileNameChange(fname, SHK_FALSE);
             if(unexist_status) return textWriter();
             errCode = textRead(fname, 0, SHK_FALSE);
-            fileNameChange(fname, SHK_FALSE);
             if(errCode != 0) return errCode;
             printf("\n");
             return textWriter();
         }
         case WASCII: {
+            fileNameChange(fname, SHK_TRUE);
             if(unexist_status) return asciiWriter();
             errCode = asciiRead(fname, 0, SHK_FALSE);
-            fileNameChange(fname, SHK_TRUE);
             if(errCode != 0) return errCode;
             printf("\n");
             return asciiWriter();
@@ -209,6 +234,7 @@ int asciiWriter()
         getFileName(SHK_TRUE);
     }
     if(!open_Infile(filename)) return 1;
+    if(!newfile_mode) createTempFile(filename);
     printf("%s", W0008);
     if(newfile_mode) fprintf(outfile, "07, 03");    // 为后期版本保留的文件魔数
     while(1)
@@ -238,6 +264,7 @@ int textWriter()
         getFileName(SHK_FALSE);
     }
     if(!open_Infile(filename)) return 1;
+    if(!newfile_mode) createTempFile(filename);
     printf("%s", W0008);
     while(1)
     {

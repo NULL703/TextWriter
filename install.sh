@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 # 用于编译、安装与卸载目标程序的shell脚本 (V1.1)
 # Created on 2023.2.18
 # Created by NULL_703

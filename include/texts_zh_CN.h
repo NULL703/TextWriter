@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2023.8.29  17:05
+Last change time on 2023.8.29  17:25
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
@@ -60,4 +60,5 @@ Last change time on 2023.8.29  17:05
     #define W0031 "警告：缓冲大小不为0，行数将不显示。[W_1003]\n"
     #define W0032 "警告：HEX序列总数不为偶数，最后一个项将被丢弃。[W_2005]\n"\
         "\033[0;36mNote: 由此程序生成的hex文件通常不会出现此情况，这意味着该文件可能不是自动生成的或者文件被人为改动，而输出文件也可能会有部分内容不可读。\033[m\n"
+    #define W0033 "信息：正在复制原始文件内容到临时文件...[I_2002]\n"
 #endif    // ZH_CN_H
