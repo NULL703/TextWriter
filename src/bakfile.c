@@ -3,7 +3,7 @@
 Copyright (C) 2023 NULL_703, All rights reserved.
 Created on 2023.9.13  17:10
 Created by NULL_703
-Last change time on 2023.9.17  17:06
+Last change time on 2023.10.14  10:27
 ************************************************************************/
 #include <time.h>
 #include <main.h>
@@ -40,6 +40,7 @@ int createTempFilename(const char* oname, char* retname)
 
 int createTempFile(const char* oname)
 {
+#ifndef __MSVC
     char ch = '\0';
     createTempFilename(oname, bakname);
     tempfile = fopen(bakname, "ab");
@@ -58,6 +59,9 @@ int createTempFile(const char* oname)
     }
     fclose(origfile);
     fclose(tempfile);
+#else
+    printf("%s%s%s", F_YELLOW, W0034, NORMAL);
+#endif
     return 0;
 }
 

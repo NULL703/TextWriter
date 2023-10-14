@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  14:44
 Created by NULL_703
-Last change time on 2023.9.17  15:08
+Last change time on 2023.10.14  10:24
 ************************************************************************/
 #include <time.h>
 #include <ctype.h>
@@ -12,7 +12,7 @@ Last change time on 2023.9.17  15:08
 #include <filereader.h>
 #include <bakfile.h>
 
-char spchars[0x5][0xf] = {"", "EXT", "NSV", "RES"};
+char spchars[0x8][0xf] = {"", "EXT", "NSV", "RES"};
 char filename[0xff] = "default.txt";
 extern char bakname[8];
 SHK_BOOL newfile_mode = SHK_TRUE;
@@ -66,9 +66,13 @@ int spcharEx(int spcharIndex, FILE* fileptr)
             exit(0);
         }
         // ESC: NSV Fn: Not save file and exit.
-        case 2: fclose(fileptr); remove(filename); exit(0);
+        case 2: fclose(fileptr); remove(filename); remove(bakname); exit(0);
         // ESC: RES Fn: Exit and restore file.
+#ifndef __MSVC
         case 3: fclose(fileptr); recfile(filename); exit(0);
+#else
+        case 3: printf("%s%s%s", F_YELLOW, W0034, NORMAL); fclose(fileptr); exit(0);
+#endif
         default: return -1;
     }
 }
