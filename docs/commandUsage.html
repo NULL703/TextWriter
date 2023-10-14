@@ -180,6 +180,11 @@ cmdtr -l --read-as-text /etc/passwd --bufsize 0</pre>
             </li>
         </ul>
         <hr />
+        <span class="lesser">3. 提示信息编号的含义</span><br />
+        <span class="straight_matter">&nbsp;&nbsp;在cmdtr执行操作时可能会有提示信息输出在命令行窗口上，在这些信息的后面通常会有一个编号，每一种类型的提示信息都会有相同前缀的编号，这里只对编号前缀进行解释。</span><br />
+        <span class="straight_matter"><b>字母前缀：</b><br />&nbsp;&nbsp;<span class="gist">I</span>：通常为命令执行时的状态信息，字体颜色为蓝色。<br />&nbsp;&nbsp;<span class="gist">W</span>：此为命令执行时所产生的警告信息，字体颜色为黄色。<br />&nbsp;&nbsp;<span class="gist">E</span>：此为命令执行时所产生的错误信息，字体颜色为红色。</span><br />
+        <span class="straight_matter"><b>数字前缀（除固定前缀外，其余数字均用<span class="gist">#</span>表示）：</b><br />&nbsp;&nbsp;<span class="gist">1###</span>：此部分的提示信息通常为命令选项相关的信息。<br />&nbsp;&nbsp;<span class="gist">2###</span>：此部分的提示信息通常为文件操作相关的信息。<br />&nbsp;&nbsp;<span class="gist">3###</span>：此部分的提示信息通常为兼容性相关的信息。</span>
+        <hr />
         <span class="foot">
             <a href="./optionLists.html">prev</a> |
             <a href="./index.html">home</a> |
