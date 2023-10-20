@@ -3,7 +3,7 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.7.9  13:42
 Created by NULL_703
-Last change time on 2023.10.14  10:21
+Last change time on 2023.10.20  10:53
 ************************************************************************/
 #ifndef TEXTWRITER_TEXTS_H
 #define TEXTWRITER_TEXTS_H
@@ -11,7 +11,7 @@ Last change time on 2023.10.14  10:21
 #ifdef ZH_CN
     #include "texts_zh_CN.h"
 #else
-    #define W0001 "TextWriter V1.1.2, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
+    #define W0001 "TextWriter V1.1.3, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
         "Usage: cmdtr [MainOption] [AttachOption] [AttachOption of parameter]\n"\
         "Or: cmdtr [-l | --showline] [ReadOption] [files...]\n"\
         "    cmdtr [MainOption] [files...]\n"\

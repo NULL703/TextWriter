@@ -3,11 +3,11 @@
 Copyright (C) 2022-2023 NULL_703, All rights reserved.
 Created on 2022.11.20  12:03
 Created by NULL_703
-Last change time on 2023.10.14  10:20
+Last change time on 2023.10.20  10:53
 ************************************************************************/
 #ifndef ZH_CN_H
 #define ZH_CN_H
-    #define W0001 "TextWriter V1.1.2, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
+    #define W0001 "TextWriter V1.1.3, Copyright (C) 2022-2023 NULL_703, All rights reserved.\n"\
         "用法：cmdtr [主选项] [附加选项] [附加选项参数]\n"\
         "或：cmdtr [-l | --showline] [读取选项] [文件...]\n"\
         "    cmdtr [主选项] [文件...]\n"\
